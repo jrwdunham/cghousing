@@ -1,70 +1,99 @@
 ================================================================================
-  Common Ground Co-op Web Site
+  Common Ground (CG) Co-op Web Site
 ================================================================================
 
-This document describes the creation of the Common Ground Co-op web site using
-Django 1.6.5. I am learning Django by following the official documentation,
-specifically the tutorial that can be found online at
-https://docs.djangoproject.com/en/1.7/intro/tutorial01/
+A web application for the Common Ground Housing Co-op. See :ref:`ShortAnchor`
 
+This repository is a Django (v. 1.6) web application for the Common Ground
+Co-op web site. It is currently in the requirements gathering and development
+stage.  Feel free to use this for your own housing co-op, or to contribute to
+the development process.
+
+
+
+.. _`ShortAnchor`:
 
 Architecture (thanks to Derek Darling)
 ================================================================================
 
 - Public
-    - About Us
-      - Content ("about us subpage")
-      - Picture gallery
-      - Video gallery
-      - Essays and/or blogs (?)
-      - Contact Us (Email, Housing requests, Vendor, email hub)
-      - Maps (google, or OpenStreetMap)
+
+  - About Us
+
+    - Content ("about us subpage")
+    - Picture gallery
+    - Video gallery
+    - Essays and/or blogs (?)
+    - Contact Us (Email, Housing requests, Vendor, email hub)
+    - Maps (google, or OpenStreetMap)
+
 - Private (authentication required, authorization determinse access)
-    - Board Page (for all governance materials: minutes, policies, etc.)
-      - Menu
-        - Board minutes
-        - Policies, In Force, including amendments
-        - Draft policies and amendments
-        - Communications
-    - Maintenance Site (for all physical plant records, maintenance requests,
-      and disposition (sic))
-      - Menu
-        - All-member access
-          - Unit Database
-          - Maintenance Requests
-          - Purchase Order Subsystem
-          - Inventory
-        - Maintenance-only access
-          - Discussion
-    - Finance (content to be determined)
-      - Annual reports (?)
-    - Email Hub (for all emailing, including archived email)
-      - Email Admin
-        - Forms
-          - Maintenance request via Email form
-          - Housing request via Email form
-          - Vendor Email form
-          - Other
-        - Subsystems
-          - Auto-send email subsystem
-          - Moderated email subsystem
-    - Member Page
-      - Maintenance request (directs to maintenance page email forms system (?))
-      - Upcoming events
-      - Member meeting minutes
-      - Discussion groups
-      - Etc./other
-      - Committees
-        - Maintenance (to maintenance page)
-        - Grounds (to Grounds page)
-        - Social (to Social page)
-        - Finance (to Finance page)
-        - Other (to Other page)
-      - Calendar (automated email reminders, events)
+
+  - Board Page (for all governance materials: minutes, policies, etc.)
+
+    - Menu
+
+      - Board minutes
+      - Policies, In Force, including amendments
+      - Draft policies and amendments
+      - Communications
+
+  - Maintenance Site (for all physical plant records, maintenance requests,
+    and disposition (sic))
+
+    - Menu
+
+      - All-member access
+
+        - Unit Database
+        - Maintenance Requests
+        - Purchase Order Subsystem
+        - Inventory
+
+
+      - Maintenance-only access
+
+        - Discussion
+
+  - Finance (content to be determined)
+
+    - Annual reports (?)
+
+  - Email Hub (for all emailing, including archived email)
+
+    - Email Admin
+
+      - Forms
+
+        - Maintenance request via Email form
+        - Housing request via Email form
+        - Vendor Email form
+        - Other
+
+      - Subsystems
+        - Auto-send email subsystem
+        - Moderated email subsystem
+
+  - Member Page
+
+    - Maintenance request (directs to maintenance page email forms system (?))
+    - Upcoming events
+    - Member meeting minutes
+    - Discussion groups
+    - Etc./other
+    - Committees
+
+      - Maintenance (to maintenance page)
+      - Grounds (to Grounds page)
+      - Social (to Social page)
+      - Finance (to Finance page)
+      - Other (to Other page)
+
+    - Calendar (automated email reminders, events)
 
 
 Model
-================================================================================
+--------------------------------------------------------------------------------
 
 Models to start off with:
 
@@ -101,6 +130,7 @@ the architecture):
 - Calendar/Events
 
 
+
 Installing Django locally
 ================================================================================
 
@@ -128,4 +158,5 @@ Installing Django on BlueHost
 For instructions on installing Django on BlueHost, see
 
 http://blog.ruedaminute.com/2011/01/2011-installation-instructions-for-django-on-bluehost/
+
 
