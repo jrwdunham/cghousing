@@ -9,6 +9,8 @@ Co-op web site. It is currently in the requirements gathering and development
 stage.  Feel free to use this for your own housing co-op, or to contribute to
 the development process.
 
+.. image:: cg-admin-screenshot.pdf 
+
 .. contents:: Table of Contents
 
 
@@ -22,11 +24,12 @@ and start the live server.::
     $ git clone https://github.com/jrwdunham/cghousing.git
     $ cd cghousing
     $ python manage.py syncdb
-    $ python manage.py loaddata coop/fixtures/fixtures
+    $ python manage.py loaddata coop/fixtures/fixtures.json
     $ python manage.py runserver
 
 Voila! Visit http://127.0.0.1:8000/admin/coop/person/ to see a bunch of pretend
-co-op members/occupants.
+co-op members/occupants. Begin exploring the admin site that Django creates for the
+co-op model by 
 
 This is all standard Django stuff. See https://docs.djangoproject.com/en/1.6/
 for details.
