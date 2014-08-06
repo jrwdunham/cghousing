@@ -12,6 +12,25 @@ the development process.
 .. contents:: Table of Contents
 
 
+QuickStart
+================================================================================
+
+Assuming you have Django 1.6 installed correctly, the following commands will
+download the web app, create the database tables, load them with some fake data,
+and start the live server.::
+
+    $ git clone https://github.com/jrwdunham/cghousing.git
+    $ cd cghousing
+    $ python manage.py syncdb
+    $ python manage.py loaddata coop/fixtures/fixtures
+    $ python manage.py runserver
+
+Voila! Visit http://127.0.0.1:8000/admin/coop/person/ to see a bunch of pretend
+co-op members/occupants.
+
+This is all standard Django stuff. See https://docs.djangoproject.com/en/1.6/
+for details.
+
 
 Architecture (thanks to Derek Darling)
 ================================================================================
@@ -27,7 +46,7 @@ Architecture (thanks to Derek Darling)
     - Contact Us (Email, Housing requests, Vendor, email hub)
     - Maps (google, or OpenStreetMap)
 
-- Private (authentication required, authorization determinse access)
+- Private (authentication required, authorization determines access)
 
   - Board Page (for all governance materials: minutes, policies, etc.)
 
@@ -130,9 +149,11 @@ the architecture):
 - Calendar/Events
 
 
+Installation Help
+================================================================================
 
 Installing Django locally
-================================================================================
+--------------------------------------------------------------------------------
 
 I used pyenv (https://github.com/yyuu/pyenv) to install Python 2.7.6::
 
@@ -151,9 +172,8 @@ of writing)::
     $ pip install Django
 
 
-
 Installing Django on BlueHost
-================================================================================
+--------------------------------------------------------------------------------
 
 For instructions on installing Django on BlueHost, see
 
