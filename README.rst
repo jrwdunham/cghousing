@@ -9,7 +9,7 @@ Co-op web site. It is currently in the requirements gathering and development
 stage.  Feel free to use this for your own housing co-op, or to contribute to
 the development process.
 
-.. image:: cg-admin-screenshot.pdf 
+.. image:: cg-admin-screenshot.png
 
 .. contents:: Table of Contents
 
