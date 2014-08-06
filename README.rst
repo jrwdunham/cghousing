@@ -2,16 +2,16 @@
   Common Ground (CG) Co-op Web Site
 ================================================================================
 
-A web application for the Common Ground Housing Co-op. See :ref:`ShortAnchor`
+A web application for the Common Ground Housing Co-op.
 
 This repository is a Django (v. 1.6) web application for the Common Ground
 Co-op web site. It is currently in the requirements gathering and development
 stage.  Feel free to use this for your own housing co-op, or to contribute to
 the development process.
 
+.. contents:: Table of Contents
 
 
-.. _`ShortAnchor`:
 
 Architecture (thanks to Derek Darling)
 ================================================================================
