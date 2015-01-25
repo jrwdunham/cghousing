@@ -63,3 +63,5 @@ target/
 cghousing/polls/
 cghousing/coop/fixtures/fixtures_real.json
 
+.python-version
+
