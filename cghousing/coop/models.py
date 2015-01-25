@@ -99,7 +99,7 @@ class Person(Base):
     unit = models.ForeignKey(Unit, null=True, related_name='occupants')
 
     committee_excused = models.BooleanField(default=False)
-    member = models.BooleanField() # Member of Co-op or not
+    member = models.BooleanField(default=False) # Member of Co-op or not
 
     notes = models.TextField()
     children = models.ManyToManyField("Person", related_name='parents')
