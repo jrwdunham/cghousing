@@ -85,3 +85,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# WARN: commented-out because this seems to be not necessary as of Django 1.7, see
+# http://deathofagremmie.com/2014/05/24/retiring-get-profile-and-auth-profile-module/ and
+# https://docs.djangoproject.com/en/1.7/topics/auth/customizing/#extending-the-existing-user-model
+# AUTH_PROFILE_MODULE = 'accounts.Person'
+
