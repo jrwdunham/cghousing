@@ -2601,6 +2601,16 @@
     }
   }, 
   {
+    "pk": 14, 
+    "model": "coop.committee", 
+    "fields": {
+      "chair": null, 
+      "name": "Co-op", 
+      "members": [],
+      "description": "This is the committee that all members belong to. The minutes of the General Membership meetings and of the Annual General Meeting should be associated to this committee."
+    }
+  }, 
+  {
     "pk": 1, 
     "model": "coop.move", 
     "fields": {
@@ -2769,6 +2779,38 @@
       "committee": 5, 
       "person": 63
     }
+  },
+  {
+    "pk": 101, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Classifieds",
+      "description": "Use this forum to advertize give-aways , trades, sales, and wanted items."
+    }
+  },
+  {
+    "pk": 102, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "General Discussion",
+      "description": "General discussions about co-op business."
+    }
+  },
+  {
+    "pk": 1, 
+    "model": "coop.thread", 
+    "fields": {
+      "subject": "Welcome",
+      "forum": 102
+    }
+  },
+  {
+    "pk": 1, 
+    "model": "coop.post", 
+    "fields": {
+      "subject": "Welcome",
+      "post": "Hello fellow co-op members. Welcome to the Common Ground Co-op discussion forum. This is the first post of the \"Welcome\" thread of the \"General Discussion\" forum.",
+      "thread": 1
+    }
   }
-
 ]

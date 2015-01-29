@@ -1,6 +1,6 @@
 from django.contrib import admin
 from coop.models import Person, Unit, UnitInspection, Committee, Move,\
-    BlockRepresentative, Forum, Thread, Post
+    BlockRepresentative, Forum, Thread, Post, Page, MeetingMinutes
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
@@ -63,11 +63,13 @@ class PersonGetter:
         user = getattr(obj, role)
         if hasattr(user, 'person'):
             return user.person
-        else:
+        elif user:
             if user.first_name and user.last_name:
                 return '%s %s' % (user.first_name, user.last_name)
             else:
                 return user
+        else:
+            return u''
 
     def get_creator(self, obj):
         return self.get_person(obj, 'creator')
@@ -296,8 +298,15 @@ class PersonAdmin(MyModelAdmin):
 
 class CommitteeAdmin(MyModelAdmin):
 
-    list_display = ('name', 'chair', 'get_members')
+    list_display = (
+        'name',
+        'chair',
+        'get_members',
+        'description'
+    )
+
     ordering = ('name',)
+
     filter_horizontal = ('members',)
 
     fieldsets = [
@@ -344,7 +353,7 @@ class BlockRepresentativeAdmin(MyModelAdmin):
 
 class PostInline(admin.StackedInline, PersonGetter):
     model = Post
-    extra = 0
+    extra = 1
 
     fieldsets = [
         (None, {
@@ -363,9 +372,7 @@ class ThreadInline(admin.StackedInline, PersonGetter):
 
     fieldsets = [
         (None, {
-            'fields': [
-                'subject',
-                'post']}),
+            'fields': ['subject']}),
         CREATE_MODIFY_INFO
     ]
 
@@ -409,8 +416,8 @@ class ForumAdmin(MyModelAdmin):
 class ThreadAdmin(MyModelAdmin):
 
     list_display = (
-        'forum',
         'subject',
+        'forum',
         'get_creator',
         'get_replies',
         'get_last_post'
@@ -420,14 +427,15 @@ class ThreadAdmin(MyModelAdmin):
         (None, {
             'fields': [
                 'forum',
-                'subject',
-                'post']}),
+                'subject']}),
         CREATE_MODIFY_INFO_
     ]
 
     readonly_fields = READONLY_FIELDS_
 
     inlines = (PostInline,)
+
+    list_filter = ['forum']
 
     def get_replies(self, obj):
         return obj.posts.count()
@@ -481,8 +489,64 @@ class PostAdmin(MyModelAdmin):
     get_post.short_description = u'Post'
 
 
+class PageAdmin(MyModelAdmin):
+
+    list_display = (
+        'title',
+        'get_content'
+    )
+
+    fieldsets = [
+        (None, {
+            'fields': [
+                'title',
+                'content']}),
+        CREATE_MODIFY_INFO_
+    ]
+
+    readonly_fields = READONLY_FIELDS_
+
+    def get_content(self, obj):
+        max_len = 30
+        if len(obj.content) > max_len:
+            return u'%s ...' % obj.content[:30]
+        else:
+            return obj.content
+
+    get_content.short_description = u'Content'
+
+
+class MeetingMinutesAdmin(MyModelAdmin):
+
+    list_display = (
+        'get_identifier',
+        'minutes',
+        'committee',
+        'meeting_date'
+    )
+
+    fieldsets = [
+        (None, {
+            'fields': [
+                'committee',
+                'meeting_date',
+                'minutes']}),
+        CREATE_MODIFY_INFO_
+    ]
+
+    list_filter = ['committee']
+
+    readonly_fields = READONLY_FIELDS_
+
+    def get_identifier(self, obj):
+        return 'Minutes for the meeting of the %s committee on %s' % (
+            obj.committee, obj.meeting_date.strftime("%b %d, %Y"))
+
+    get_identifier.short_description = u'Meeting minutes identifier'
+
 
 admin.site.register(Person, PersonAdmin)
+admin.site.register(MeetingMinutes, MeetingMinutesAdmin)
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(Committee, CommitteeAdmin)
 # admin.site.register(Move, MoveAdmin)
@@ -490,6 +554,7 @@ admin.site.register(Committee, CommitteeAdmin)
 admin.site.register(Forum, ForumAdmin)
 admin.site.register(Thread, ThreadAdmin)
 admin.site.register(Post, PostAdmin)
+admin.site.register(Page, PageAdmin)
 
 # Re-register UserAdmin
 admin.site.unregister(User)

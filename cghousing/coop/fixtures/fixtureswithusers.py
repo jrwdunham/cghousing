@@ -30,6 +30,15 @@ USER_TEMPLATE = {
     }
 }
 
+FORUM_TEMPLATE = {
+    "pk": None,
+    "model": "coop.forum", 
+    "fields": {
+        "name": "",
+        "description": ""
+    }
+}
+
 # If we user 1 for a user index, Django's superuser (created via `manage.py
 # syncdb` will be overwritten.
 def memberid2userid(memberid):
@@ -56,15 +65,49 @@ def generate_superuser():
     superuser['fields']['is_superuser'] = True
     return superuser
 
-fixtures = json.load(open(fixtures_path, 'rb'))
+def committee2forum(committee):
+    forum = copy.deepcopy(FORUM_TEMPLATE)
+    forum['pk'] = committee['pk']
+    forum['fields']['name'] = committee['fields']['name']
+    forum['fields']['description'] = u'Forum for the %s committee' % (
+        committee['fields']['name'].lower())
+    return forum
 
+member_ids = []
 users = []
+committees = []
+new_fixtures = []
+coop_committee_fixture = None
+
+# Loop through the fixtures, creating new ones and storing information.
+fixtures = json.load(open(fixtures_path, 'rb'))
 for fixture in fixtures:
+
+    # Create auth.user fixtures and store the pks of the members.
     if fixture['model'] == 'coop.person' and fixture['fields']['member']:
         fixture['fields']['user'] = memberid2userid(fixture['pk'])
         users.append(generate_user(fixture))
+        member_ids.append(fixture['pk'])
 
-new_fixtures = [generate_superuser()] + users + fixtures
+    # Get the Coop Committee fixture.
+    if fixture['model'] == 'coop.committee':
+        if fixture.get('fields', {}).get('name') == u'Co-op':
+            coop_committee_fixture = fixture
+        else:
+            new_fixtures.append(fixture)
+            new_fixtures.append(committee2forum(fixture))
+    else:
+        new_fixtures.append(fixture)
+
+
+# All co-op members are members of the "Co-op Committee"
+coop_committee_fixture['fields']['members'] = member_ids
+
+new_fixtures = [
+    generate_superuser(),
+    coop_committee_fixture] + \
+    users + \
+    new_fixtures
 
 json.dump(new_fixtures, open(new_fixtures_path, 'wb'), indent=2)
 

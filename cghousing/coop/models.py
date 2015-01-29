@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from django.utils.timezone import now, is_aware, is_naive, localtime
+from django.utils.timezone import now, localtime
 from django.contrib.auth.models import User
 
 import datetime
@@ -64,11 +64,13 @@ class Base(models.Model):
     def get_user_str(self, user):
         if hasattr(user, 'person'):
             return user.person
-        else:
+        elif user:
             if user.first_name and user.last_name:
                 return '%s %s' % (user.first_name, user.last_name)
             else:
                 return user
+        else:
+            return u''
 
 
 class Unit(Base):
@@ -278,45 +280,6 @@ class BlockRepresentative(Base):
         ROLES]))
 
 
-class Committee(Base):
-    """A model for each committee.
-
-    """
-
-    def __unicode__(self):
-        return self.name
-
-    # Commmittee name, e.g., 'Finance', 'Grounds', etc.
-    name = models.CharField(
-        max_length=200
-    )
-
-    # A chair is many-to-one: each committee has exactly one, but an
-    # overworked member can be chair of many (I think...)
-    # Note: some committees are currently lacking a chair and some appear
-    # to have two. Is the last phenomenon an error?
-    chair = models.ForeignKey(
-        Person,
-        blank=True,
-        null=True,
-        related_name='chairships'
-    )
-
-    # Members are many-to-many: committees can have multiple members and
-    # people can be on multiple committees.
-    members = models.ManyToManyField(
-        Person,
-        related_name='committees',
-        blank=True
-    )
-
-    description = models.TextField(
-        blank=True
-    )
-
-    # meeting minutes
-
-
 class Page(Base):
     """A model for generic pages on the web site.
 
@@ -329,7 +292,9 @@ class Page(Base):
     )
 
     # Content of the page in Markdown (or filtered HTML)
-    content = models.TextField()
+    content = models.TextField(
+        blank=True
+    )
 
     # path (to route directly to the page, e.g., cghousing.or/pages/<path>
 
@@ -417,7 +382,7 @@ class Thread(Base):
     )
 
     # The content of the post
-    post = models.TextField()
+    #post = models.TextField()
 
     # TODO: other attributes:
     # - subcategory # TODO: is this useful here?
@@ -471,7 +436,10 @@ class Post(Base):
     # The thread that this post belongs to.
     thread = models.ForeignKey(
         Thread,
-        related_name='posts'
+        related_name='posts',
+        blank=True,
+        null=True,
+        default=None
     )
 
     # The post that this post is responding to.
@@ -486,9 +454,71 @@ class Post(Base):
     # TODO: other attributes:
     # - markup language # markdown, reStructuredText
 
-    # TODO: admin interface:
-    # - poster (creator of thread)
-    # - view count
-    # - reply count
-    # - last post (thread title, poster, timestamp)
 
+class Committee(Base):
+    """A model for each committee.
+
+    """
+
+    def __unicode__(self):
+        return self.name
+
+    # Commmittee name, e.g., 'Finance', 'Grounds', etc.
+    name = models.CharField(
+        max_length=200
+    )
+
+    # A chair is many-to-one: each committee has exactly one, but an
+    # overworked member can be chair of many (I think...)
+    # Note: some committees are currently lacking a chair and some appear
+    # to have two. Is the last phenomenon an error?
+    chair = models.ForeignKey(
+        Person,
+        blank=True,
+        null=True,
+        related_name='chairships'
+    )
+
+    # Members are many-to-many: committees can have multiple members and
+    # people can be on multiple committees.
+    members = models.ManyToManyField(
+        Person,
+        related_name='committees',
+        blank=True
+    )
+
+    description = models.TextField(
+        blank=True
+    )
+
+    # Relational attributes defined on other models:
+    # meeting_minutes
+
+
+class MeetingMinutes(Base):
+    """Model for holding meeting minutes.
+
+    """
+
+    def __unicode__(self):
+        return 'Meeting of %s on %s' % (
+            self.committee.name, self.meeting_date.strftime('%b %d, %Y'))
+
+    # Commmittee name, e.g., 'Finance', 'Grounds', etc.
+    committee = models.ForeignKey(
+        Committee,
+        related_name='meeting_minutes'
+    )
+
+    # date when the meeting occurred.
+    meeting_date = models.DateField()
+
+    # meeting minutes in text form
+    minutes = models.TextField(
+        blank=True
+    )
+
+    # TODO: file object(s) for minutes in file (.pdf, .doc, .txt) form
+
+    class Meta:
+        verbose_name_plural = "Meeting minutes"

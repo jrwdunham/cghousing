@@ -14,6 +14,87 @@
     }
   }, 
   {
+    "pk": 14, 
+    "model": "coop.committee", 
+    "fields": {
+      "chair": null, 
+      "name": "Co-op", 
+      "members": [
+        1, 
+        2, 
+        3, 
+        4, 
+        5, 
+        6, 
+        7, 
+        8, 
+        9, 
+        10, 
+        11, 
+        12, 
+        13, 
+        14, 
+        15, 
+        16, 
+        17, 
+        18, 
+        19, 
+        20, 
+        21, 
+        22, 
+        23, 
+        24, 
+        25, 
+        26, 
+        27, 
+        28, 
+        29, 
+        30, 
+        31, 
+        32, 
+        33, 
+        34, 
+        35, 
+        36, 
+        37, 
+        38, 
+        39, 
+        40, 
+        41, 
+        42, 
+        43, 
+        44, 
+        45, 
+        46, 
+        47, 
+        48, 
+        49, 
+        50, 
+        51, 
+        52, 
+        53, 
+        54, 
+        55, 
+        56, 
+        57, 
+        58, 
+        59, 
+        60, 
+        61, 
+        62, 
+        63, 
+        64, 
+        65, 
+        66, 
+        67, 
+        68, 
+        69, 
+        70
+      ], 
+      "description": "This is the committee that all members belong to. The minutes of the General Membership meetings and of the Annual General Meeting should be associated to this committee."
+    }
+  }, 
+  {
     "pk": 11, 
     "model": "auth.user", 
     "fields": {
@@ -3416,6 +3497,14 @@
     }
   }, 
   {
+    "pk": 1, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Pets", 
+      "description": "Forum for the pets committee"
+    }
+  }, 
+  {
     "pk": 2, 
     "model": "coop.committee", 
     "fields": {
@@ -3427,6 +3516,14 @@
         37, 
         69
       ]
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "20-20", 
+      "description": "Forum for the 20-20 committee"
     }
   }, 
   {
@@ -3449,6 +3546,14 @@
     }
   }, 
   {
+    "pk": 3, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Membership", 
+      "description": "Forum for the membership committee"
+    }
+  }, 
+  {
     "pk": 4, 
     "model": "coop.committee", 
     "fields": {
@@ -3467,6 +3572,14 @@
         69, 
         70
       ]
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Grounds", 
+      "description": "Forum for the grounds committee"
     }
   }, 
   {
@@ -3492,6 +3605,14 @@
     }
   }, 
   {
+    "pk": 5, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Maintenance", 
+      "description": "Forum for the maintenance committee"
+    }
+  }, 
+  {
     "pk": 6, 
     "model": "coop.committee", 
     "fields": {
@@ -3507,6 +3628,14 @@
     }
   }, 
   {
+    "pk": 6, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Finance", 
+      "description": "Forum for the finance committee"
+    }
+  }, 
+  {
     "pk": 7, 
     "model": "coop.committee", 
     "fields": {
@@ -3516,6 +3645,14 @@
         13, 
         14
       ]
+    }
+  }, 
+  {
+    "pk": 7, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Kids", 
+      "description": "Forum for the kids committee"
     }
   }, 
   {
@@ -3536,6 +3673,14 @@
     }
   }, 
   {
+    "pk": 8, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Board", 
+      "description": "Forum for the board committee"
+    }
+  }, 
+  {
     "pk": 9, 
     "model": "coop.committee", 
     "fields": {
@@ -3544,6 +3689,14 @@
       "members": [
         22
       ]
+    }
+  }, 
+  {
+    "pk": 9, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Move in/out", 
+      "description": "Forum for the move in/out committee"
     }
   }, 
   {
@@ -3559,6 +3712,14 @@
     }
   }, 
   {
+    "pk": 10, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Welcoming", 
+      "description": "Forum for the welcoming committee"
+    }
+  }, 
+  {
     "pk": 11, 
     "model": "coop.committee", 
     "fields": {
@@ -3567,6 +3728,14 @@
       "members": [
         38
       ]
+    }
+  }, 
+  {
+    "pk": 11, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Participation", 
+      "description": "Forum for the participation committee"
     }
   }, 
   {
@@ -3584,6 +3753,14 @@
     }
   }, 
   {
+    "pk": 12, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Common room", 
+      "description": "Forum for the common room committee"
+    }
+  }, 
+  {
     "pk": 13, 
     "model": "coop.committee", 
     "fields": {
@@ -3592,6 +3769,14 @@
       "members": [
         57
       ]
+    }
+  }, 
+  {
+    "pk": 13, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Social", 
+      "description": "Forum for the social committee"
     }
   }, 
   {
@@ -3762,6 +3947,39 @@
       "role": "roof monitor", 
       "committee": 5, 
       "person": 63
+    }
+  }, 
+  {
+    "pk": 101, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "Classifieds", 
+      "description": "Use this forum to advertize give-aways , trades, sales, and wanted items."
+    }
+  }, 
+  {
+    "pk": 102, 
+    "model": "coop.forum", 
+    "fields": {
+      "name": "General Discussion", 
+      "description": "General discussions about co-op business."
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "coop.thread", 
+    "fields": {
+      "forum": 102, 
+      "subject": "Welcome"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "coop.post", 
+    "fields": {
+      "post": "Hello fellow co-op members. Welcome to the Common Ground Co-op discussion forum. This is the first post of the \"Welcome\" thread of the \"General Discussion\" forum.", 
+      "thread": 1, 
+      "subject": "Welcome"
     }
   }
 ]

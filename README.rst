@@ -175,6 +175,15 @@ of writing)::
     $ pip install Django
 
 
+Deploying a Django app on WebFaction
+--------------------------------------------------------------------------------
+
+The WebFaction docs are good. See:
+
+- http://docs.webfaction.com/software/django/getting-started.html
+- http://docs.webfaction.com/software/django/config.html
+
+
 Installing Django on BlueHost
 --------------------------------------------------------------------------------
 
