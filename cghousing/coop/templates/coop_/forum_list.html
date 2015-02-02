@@ -1,0 +1,16 @@
+{% extends "./base.html" %}
+
+{% block title %}Forums{% endblock %}
+
+{% block content %}
+  {% if forum_list %}
+    <ul>
+    {% for forum in forum_list %}
+      <li><a href="{% url 'coop:forum' forum.id %}">{{ forum.name }}</a></li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>No forums are available.</p>
+  {% endif %}
+{% endblock %}
+

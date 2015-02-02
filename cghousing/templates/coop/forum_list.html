@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block body_class %}class="forum"{% endblock %}
+
+{% block content %}
+  <h1>Forums</h1>
+
+  <p>Welcome to our members-only forums page. Forums can be used for discussions
+  about issues that matter to the co-op. Click on the name of a forum to read the
+  conversations and/or make your own posts.</p>
+
+  {% for forum_category, forum_sublist in forum_list.items %}
+    {% if forum_sublist %}
+      <table>
+        <thead>
+          <tr>
+            <th class="name">
+            {% if forum_category == 'committee_forums' %}
+              Committee Forums
+            {% else %}
+              General Forums
+            {% endif %}
+            </th>
+            <th class="threads">Threads</th>
+            <th class="posts">Posts</th>
+            <th class="last-post">Last post</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for forum in forum_sublist %}
+          <tr>
+            <td>
+              <div class='forum-name'>
+                <a href="{% url 'coop:forum_by_url_name' forum.url_name %}"
+                    >{{ forum.name }}</a>
+              </div>
+              <div class='forum-description'>
+                {{ forum.description }}
+              </div>
+            </td>
+            <td class='center-middle'>{{ forum.threads.count|intcomma }}</td>
+            <td class='center-middle'>{{ forum.posts|length|intcomma }}</td>
+            <td class='center-middle'>
+              {% if forum.most_recent_post %}
+                <div>
+                  <a href="#">{{ forum.most_recent_post.subject|truncatechars:26|default:'' }}</a>
+                </div>
+                {% if forum.most_recent_post.creator %}
+                  ({{ forum.most_recent_post.creator.first_name }}
+                   {{ forum.most_recent_post.creator.last_name }})
+                   -
+                {% endif %}
+                {{ forum.most_recent_post.datetime_created|date:'N j, Y, P' }}
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No forums are available.</p>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
+
+{% block rightbar %}{% endblock %}

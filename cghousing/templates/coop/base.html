@@ -1,0 +1,131 @@
+{% load markdown_deux_tags %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static "coop/css/reset.css" %}" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static "coop/css/base.css" %}" />
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <title>{% block title %}{{ app_settings.coop_name }}{% endblock %}</title>
+</head>
+
+<body {% block body_class %}{% endblock %}>
+
+    <div id="container">
+
+
+        <div id="header">
+
+            {% block header %}
+            <div id="branding">
+                <a href="{% url "coop:index" %}">
+                    <h1 id="site-name">{{ app_settings.coop_name }}</h1>
+                </a>
+            </div>
+
+            <div id="user-tools">
+            {% if user.is_authenticated %}
+                Welcome, <strong>{{ user.username }}</strong>.
+                <!-- <a href="{% url "coop:logout" %}">Change password</a>
+                    / -->
+                <a href="{% url "coop:logout" %}">Log out</a>
+            {% else %}
+                <a href="{% url "coop:login" %}">Log in</a>
+            {% endif %}
+            </div>
+            {% endblock %}
+
+        </div>
+
+
+        <div class="breadcrumbs">
+
+            {% block breadcrumbs %}
+
+            {% endblock %}
+
+        </div>
+
+
+        <div id="leftbar">
+
+        {% block leftbar %}
+
+        <img id="picture" src="{% static "coop/images/coop-214.jpg" %}" />
+
+        <div class="module">
+
+          <ul>
+            {% for url_title, title in coop_static_pages %}
+              {% if url_title == current_page %}
+                <li class='current-page'>{{ title }}</li>
+              {% else %}
+                <li><a href="{% url "coop:page_by_url_title" url_title %}">{{ title }}</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+
+        </div>
+
+        {% if user.is_authenticated %}
+        <div class="module">
+          <h2>Members only</h2>
+          <ul>
+            {% for url_, title in coop_dynamic_pages %}
+              {% if url_ == current_page %}
+                <li class='current-page'>{{ title }}</li>
+              {% else %}
+                <li><a href="{% url "coop:"|add:url_ %}">{{ title }}</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        {% if user.is_staff %}
+        <div class="module">
+          <h2>Administrators</h2>
+          <ul>
+            <li><a href="{% url "admin:index" %}">Administrator Site</a></li>
+          </ul>
+        </div>
+        {% endif %}
+
+        {% endblock %}
+
+        </div>
+
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+
+
+        <div id="rightbar">
+
+        {% block rightbar %}
+
+        <div class="module">
+
+          <h2>News</h2>
+
+          <div class="content">
+            {{ app_settings.news|markdown }}
+          </div>
+
+        </div>
+
+        {% endblock %}
+
+        </div>
+
+
+        <div id="footer">
+            {% block footer %}{% endblock %}
+        </div>
+    </div>
+
+</body>
+</html>
+

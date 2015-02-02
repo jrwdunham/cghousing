@@ -1,9 +1,10 @@
+import string
+import datetime
+
 from django.db import models
 from django.utils import timezone
 from django.utils.timezone import now, localtime
 from django.contrib.auth.models import User
-
-import datetime
 
 """Models for the Co-op App
 
@@ -13,6 +14,7 @@ import datetime
 - Pages
 
 """
+
 
 class Base(models.Model):
     """Abstract base class for CG models. Implements the functionality
@@ -71,6 +73,48 @@ class Base(models.Model):
                 return user
         else:
             return u''
+
+
+class ApplicationSettings(Base):
+
+    def __unicode__(self):
+        return u'Application Settings for %s' % self.coop_name
+
+    coop_name = models.CharField(
+        max_length=200,
+        default=u'Co-op'
+    )
+
+    # News about the co-op: will appear in the righthand sidebar of
+    # the public pages.
+    news = models.TextField(
+        blank=True,
+        null=True,
+        default=u'',
+        help_text=u'News about the unit.'
+    )
+
+    home_page = models.ForeignKey(
+        'Page',
+        blank=True,
+        null=True,
+        default=None,
+        help_text=u'The home page of this application.'
+    )
+
+    # Public pages order: JSON array of `Page.id`s
+    public_pages = models.TextField(
+        default='[]',
+        help_text=(u'Ordered list of page ids for the public pages of the site: '
+          u'JSON array of integers.')
+    )
+
+    # Member pages order: JSON array of `Page.id`s
+    member_pages = models.TextField(
+        default='[]',
+        help_text=(u'Ordered list of page ids for the members-only pages of the site: '
+          u'JSON array of integers.')
+    )
 
 
 class Unit(Base):
@@ -285,10 +329,23 @@ class Page(Base):
 
     """
 
+    def __unicode__(self):
+        return u'Page entitled "%s"' % self.title
+
+
     # Title of page; add unique constraint
     title = models.CharField(
         unique=True,
         max_length=200
+    )
+
+    # URL-friendly title of page
+    url_title = models.CharField(
+        unique=True,
+        max_length=200,
+        blank=True,
+        null=True,
+        default=None
     )
 
     # Content of the page in Markdown (or filtered HTML)
@@ -296,7 +353,16 @@ class Page(Base):
         blank=True
     )
 
-    # path (to route directly to the page, e.g., cghousing.or/pages/<path>
+    # If true, then you don't need a password to view this page.
+    public = models.BooleanField(
+        default=False
+    )
+
+    # If true, then you can include raw HTML in the content of this page.
+    # WARN: only admins should be allowed to change this to True.
+    trusted = models.BooleanField(
+        default=False
+    )
 
 
 class Move(Base):
@@ -353,6 +419,14 @@ class Forum(Base):
         max_length=200
     )
 
+    url_name = models.CharField(
+        unique=True,
+        max_length=200,
+        blank=True,
+        null=True,
+        default=None
+    )
+
     description = models.TextField(
         blank=True
     )
@@ -374,11 +448,24 @@ class Thread(Base):
         max_length=200
     )
 
+    # Subject of the thread in URL-friendly format
+    url_subject = models.CharField(
+        unique=True,
+        max_length=200,
+        blank=True,
+        null=True,
+        default=None
+    )
+
     forum = models.ForeignKey(
         Forum,
         related_name='threads',
         null=True,
         default=None
+    )
+
+    views = models.IntegerField(
+        default=0
     )
 
     # The content of the post
@@ -489,6 +576,15 @@ class Committee(Base):
 
     description = models.TextField(
         blank=True
+    )
+
+    # A forum just for this committee
+    forum = models.OneToOneField(
+        Forum,
+        blank=True,
+        null=True,
+        default=None,
+        related_name='committee'
     )
 
     # Relational attributes defined on other models:

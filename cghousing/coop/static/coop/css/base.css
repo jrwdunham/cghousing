@@ -1,0 +1,573 @@
+body
+{
+  font-size: 16px;
+  font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+  color: #333;
+  line-height: 125%;
+}
+
+#header
+{
+  width: 100%;
+  background: #417690;
+  color: #ffc;
+  overflow: hidden;
+}
+
+#header a:link,
+#header a:visited
+{
+  color: #fff;
+}
+
+#header a:hover
+{
+  text-decoration: underline;
+}
+
+#branding
+{
+  float: left;
+}
+
+#branding h1
+{
+  color: #f4f379;
+  padding: 0 10px;
+  font-size: 120%;
+  margin: 8px 0;
+  font-weight: normal;
+}
+
+#user-tools
+{
+  float: right;
+  padding: 0.8em 1em;
+  font-size: 11px;
+  text-align: right;
+}
+
+#site-name
+{
+}
+
+a:link,
+a:visited
+{
+  text-decoration: none;
+  color: #5b80b2;
+}
+
+a:hover {
+  color: #036;
+}
+
+#container
+{
+  position: relative;
+  width: 100%;
+  min-width: 760px;
+  padding: 0;
+}
+
+.login #container
+{
+  background: white;
+  border: 1px solid #ccc;
+  max-width: 22em;
+  width: 22em;
+  min-width: 22em;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 100px;
+}
+
+.login #content
+{
+  width: 90%;
+  margin: 1em;
+}
+
+.login #leftbar,
+.login #rightbar
+{
+  width: 0%;
+}
+
+#content
+{
+  /* margin: 10px 15px; */
+  /* margin: 0.7em 1em; */
+  margin: 1%;
+  display: inline-block;
+  width: 33%;
+}
+
+#content-main
+{
+  float: left;
+  width: 100%;
+}
+
+.login #content-main
+{
+  width: 100%;
+}
+
+.clear
+{
+  clear: both;
+}
+
+.login form
+{
+  margin-top: 1em;
+}
+
+form {
+  margin: 0;
+  padding: 0;
+}
+
+.login .form-row
+{
+  padding: 4px 0;
+  float: left;
+  width: 100%;
+}
+
+.login .submit-row
+{
+  clear: both;
+  padding: 1em 0 0 9.4em;
+}
+
+.login .form-row label
+{
+  padding-right: 0.5em;
+  line-height: 2em;
+  font-size: 1em;
+  clear: both;
+  color: #333;
+}
+
+.login .form-row #username,
+.login .form-row #password
+{
+  clear: both;
+  padding: 6px;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body.login
+{
+  background-color: #eee;
+}
+
+.page #content
+{
+  /* width: 500px; */
+  width: 35%;
+}
+
+.forum #content,
+.thread #content
+{
+  width: 55%;
+}
+
+td,
+th
+{
+  font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+  font-size: 90%;
+}
+
+.forum table
+{
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.thread table.posts
+{
+  width: 100%;
+}
+
+.thread table.post,
+.thread table.post-quick-reply
+{
+  /* margin: 0.5em; */
+  margin: 0.5em 0;
+  width: 100%;
+}
+
+.thread table.post-quick-reply h2
+{
+}
+
+.forum table thead th,
+.forum table tbody td,
+.thread table.post tbody td
+{
+  padding: 5px;
+}
+
+td.post,
+td.post-quick-reply,
+.thread table.post-quick-reply td
+
+{
+  padding: 0;
+}
+
+.forum table thead th.name,
+.forum table thead th.last-post
+{
+  width: 39%;
+}
+
+.forum table thead th.threads,
+.forum table thead th.posts
+{
+  width: 10%;
+}
+
+.forum table thead th
+{
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: normal;
+  color: #666;
+  font-size: 11px;
+  background: #e1e1e1 url(../images/nav-bg.gif) top left repeat-x;
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.forum table,
+.forum th,
+.forum td,
+.thread table.post th,
+.thread table.post td,
+.thread table.post-quick-reply th,
+.thread table.post-quick-reply td
+{
+  border: 1px solid #ccc;
+}
+
+
+div.post-subject,
+div.post-reply-to,
+div.post-id,
+div.post-datetime
+{
+  display: inline-block;
+  /* float: left; */
+}
+
+div.post-reply-to
+{
+  margin-left: 0.5em;
+}
+
+div.post-subject
+{
+  font-weight: bold;
+  float: left;
+}
+
+div.post-datetime
+{
+  cursor: help;
+  font-size: 80%;
+}
+
+.thread table.post td.poster
+{
+  width: 25%;
+  vertical-align: top;
+}
+
+.thread table.post td.post-meta
+{
+  width: 70%;
+  background: #e1e1e1 url(../images/nav-bg.gif) top left repeat-x;
+}
+
+.thread table.post td.post-meta div.post-meta-left
+{
+  float: left;
+}
+
+.thread table.post td.post-meta div.post-meta-right
+{
+  width: 20%;
+  float: right;
+  text-align: right;
+}
+
+.thread table.post td.post-post
+{
+  padding: 1.5em 0.5em;
+}
+
+td.center-middle
+{
+  text-align: center;
+  vertical-align: middle;
+}
+
+td.center
+{
+  text-align: center;
+}
+
+div.poster
+{
+  margin-top: 0.5em;
+}
+
+td div.forum-description
+{
+  margin: 0.5em;
+  font-size: 80%;
+  color: #999;
+}
+
+p
+{
+  margin: 1em 0;
+  text-indent: 2em;
+  text-align: justify;
+  line-height: 125%;
+}
+
+#leftbar
+{
+  float: left;
+  width: 15%;
+  /* margin: 0.7em 1em; */
+  margin: 1% 1% 1% 1%;
+}
+
+img#picture
+{
+  width: 100%;
+  border-radius: 5px;
+}
+
+#rightbar
+{
+  float: right;
+  width: 15%;
+  /* margin: 0.7em 20em 0.7em 1em; */
+  /* margin: 0.7em 27% 0.7em 1em; */
+   margin: 1% 30% 1% 1%;
+}
+
+.module
+{
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  background: #fff;
+}
+
+#leftbar .module h2,
+#rightbar .module h2,
+.thread table.post-quick-reply h2
+{
+  margin: 0;
+  padding: 2px 5px 3px 5px;
+  font-size: 11px;
+  text-align: left;
+  font-weight: bold;
+}
+
+#rightbar .module h2
+{
+  background: #eee url(../images/nav-bg.gif) bottom left repeat-x;
+  color: #666;
+}
+
+#leftbar .module h2,
+.thread table.post-quick-reply h2
+{
+  background: #7CA0C7 url(../images/default-bg.gif) top left repeat-x;
+  color: #fff;
+}
+
+#leftbar .module ul,
+#rightbar .module .content
+{
+  margin: 1em;
+}
+
+#leftbar .module ul li
+{
+  margin: 0.5em;
+}
+
+h1
+{
+  font-size: 18px;
+  color: #666;
+  padding: 0 6px 0 0;
+  margin: 0 0 .2em 0;
+}
+
+h2
+{
+  margin-top: 1em;
+}
+
+h1, h2, h3, h4, h5
+{
+  font-weight: bold;
+}
+
+#rightbar .module .content p
+{
+  color: #999 !important;
+  font-weight: normal !important;
+  font-size: 90%;
+  text-indent: 0em;
+  text-align: initial;
+  line-height: 105%;
+}
+
+.page table
+{
+  margin: 1em 0;
+}
+
+table tr td,
+table tr th
+{
+  padding: 0.25em 1em 0.25em 0;
+}
+
+table thead
+{
+  /* border-bottom: 1px solid black; */
+}
+
+th
+{
+  font-weight: bold;
+}
+
+td.right-justify
+{
+  text-align: right;
+}
+
+div.address p
+{
+  font-family: Courier New, monospace;
+  margin: 0.25em 0;
+  text-indent: 0em;
+  text-align: justify;
+  line-height: 100%;
+}
+
+input[type=submit]
+{
+  background: #fff url(../images/nav-bg.gif) bottom repeat-x;
+  padding: 3px 5px;
+  color: black;
+  border: 1px solid #bbb;
+  border-color: #ddd #aaa #aaa #ddd;
+}
+
+li.current-page
+{
+  color: #999;
+}
+
+form.post-quick-reply label
+{
+  display: block;
+}
+
+form.post-quick-reply div
+{
+  margin: 0.5em 0;
+}
+
+form.post-quick-reply input[type=text],
+form.post-quick-reply textarea
+{
+  width: 90%;
+}
+
+textarea[name=post]
+{
+  height: 10em;
+  border: 1px solid #eee;
+}
+
+.form-row
+{
+  overflow: hidden;
+  padding: 8px 12px;
+  font-size: 11px;
+  /* border-bottom: 1px solid #eee; */
+}
+
+.form-row.errors
+{
+  background: #ffefef;
+  border: 1px solid #c22 !important;
+  /* margin: -1px; */
+}
+
+ul.errorlist
+{
+  margin: 0 0 4px !important;
+  padding: 0 !important;
+  color: #fff;
+  background: #c11;
+  border-radius: 1px;
+}
+
+ul.errorlist li:first-child
+{
+  margin-top: 0;
+}
+
+ul.errorlist li
+{
+  font-size: 12px !important;
+  display: block;
+  padding: 5px 5px 4px 7px;
+  margin: 3px 0 0 0;
+}
+
+.errornote
+{
+  text-indent: 0;
+  font-size: 12px !important;
+  font-weight: bold;
+  display: block;
+  padding: 5px 5px 4px 5px;
+  margin: 0 0 3px 0;
+  border: 1px solid #c22;
+  color: #c11;
+  background: #ffefef;
+}
+
+div.breadcrumbs
+{
+  background: #fff url(../images/nav-bg-reverse.gif) 0 -10px repeat-x;
+  padding: 2px 8px 3px 8px;
+  font-size: 11px;
+  color: #999;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+

@@ -1,5 +1,122 @@
 [
   {
+    "pk": 1, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "pets", 
+      "name": "Pets", 
+      "description": "Forum for the pets committee"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "20-20", 
+      "name": "20-20", 
+      "description": "Forum for the 20-20 committee"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "membership", 
+      "name": "Membership", 
+      "description": "Forum for the membership committee"
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "grounds", 
+      "name": "Grounds", 
+      "description": "Forum for the grounds committee"
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "maintenance", 
+      "name": "Maintenance", 
+      "description": "Forum for the maintenance committee"
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "finance", 
+      "name": "Finance", 
+      "description": "Forum for the finance committee"
+    }
+  }, 
+  {
+    "pk": 7, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "kids", 
+      "name": "Kids", 
+      "description": "Forum for the kids committee"
+    }
+  }, 
+  {
+    "pk": 8, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "board", 
+      "name": "Board", 
+      "description": "Forum for the board committee"
+    }
+  }, 
+  {
+    "pk": 9, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "move-inout", 
+      "name": "Move in/out", 
+      "description": "Forum for the move in/out committee"
+    }
+  }, 
+  {
+    "pk": 10, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "welcoming", 
+      "name": "Welcoming", 
+      "description": "Forum for the welcoming committee"
+    }
+  }, 
+  {
+    "pk": 11, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "participation", 
+      "name": "Participation", 
+      "description": "Forum for the participation committee"
+    }
+  }, 
+  {
+    "pk": 12, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "common-room", 
+      "name": "Common room", 
+      "description": "Forum for the common room committee"
+    }
+  }, 
+  {
+    "pk": 13, 
+    "model": "coop.forum", 
+    "fields": {
+      "url_name": "social", 
+      "name": "Social", 
+      "description": "Forum for the social committee"
+    }
+  }, 
+  {
     "pk": 1001, 
     "model": "auth.user", 
     "fields": {
@@ -3489,49 +3606,33 @@
     "pk": 1, 
     "model": "coop.committee", 
     "fields": {
-      "chair": 1, 
-      "name": "Pets", 
       "members": [
         1
-      ]
-    }
-  }, 
-  {
-    "pk": 1, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": 1, 
       "name": "Pets", 
-      "description": "Forum for the pets committee"
+      "forum": 1
     }
   }, 
   {
     "pk": 2, 
     "model": "coop.committee", 
     "fields": {
-      "chair": 31, 
-      "name": "20-20", 
       "members": [
         1, 
         31, 
         37, 
         69
-      ]
-    }
-  }, 
-  {
-    "pk": 2, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": 31, 
       "name": "20-20", 
-      "description": "Forum for the 20-20 committee"
+      "forum": 2
     }
   }, 
   {
     "pk": 3, 
     "model": "coop.committee", 
     "fields": {
-      "chair": 16, 
-      "name": "Membership", 
       "members": [
         2, 
         15, 
@@ -3542,23 +3643,16 @@
         37, 
         46, 
         63
-      ]
-    }
-  }, 
-  {
-    "pk": 3, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": 16, 
       "name": "Membership", 
-      "description": "Forum for the membership committee"
+      "forum": 3
     }
   }, 
   {
     "pk": 4, 
     "model": "coop.committee", 
     "fields": {
-      "chair": 50, 
-      "name": "Grounds", 
       "members": [
         3, 
         17, 
@@ -3571,23 +3665,16 @@
         58, 
         69, 
         70
-      ]
-    }
-  }, 
-  {
-    "pk": 4, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": 50, 
       "name": "Grounds", 
-      "description": "Forum for the grounds committee"
+      "forum": 4
     }
   }, 
   {
     "pk": 5, 
     "model": "coop.committee", 
     "fields": {
-      "chair": 40, 
-      "name": "Maintenance", 
       "members": [
         4, 
         5, 
@@ -3601,66 +3688,45 @@
         63, 
         66, 
         67
-      ]
-    }
-  }, 
-  {
-    "pk": 5, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": 40, 
       "name": "Maintenance", 
-      "description": "Forum for the maintenance committee"
+      "forum": 5
     }
   }, 
   {
     "pk": 6, 
     "model": "coop.committee", 
     "fields": {
-      "chair": 10, 
-      "name": "Finance", 
       "members": [
         8, 
         10, 
         20, 
         32, 
         51
-      ]
-    }
-  }, 
-  {
-    "pk": 6, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": 10, 
       "name": "Finance", 
-      "description": "Forum for the finance committee"
+      "forum": 6
     }
   }, 
   {
     "pk": 7, 
     "model": "coop.committee", 
     "fields": {
-      "chair": 14, 
-      "name": "Kids", 
       "members": [
         13, 
         14
-      ]
-    }
-  }, 
-  {
-    "pk": 7, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": 14, 
       "name": "Kids", 
-      "description": "Forum for the kids committee"
+      "forum": 7
     }
   }, 
   {
     "pk": 8, 
     "model": "coop.committee", 
     "fields": {
-      "chair": 30, 
-      "name": "Board", 
       "members": [
         21, 
         30, 
@@ -3669,114 +3735,74 @@
         49, 
         63, 
         69
-      ]
-    }
-  }, 
-  {
-    "pk": 8, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": 30, 
       "name": "Board", 
-      "description": "Forum for the board committee"
+      "forum": 8
     }
   }, 
   {
     "pk": 9, 
     "model": "coop.committee", 
     "fields": {
-      "chair": null, 
-      "name": "Move in/out", 
       "members": [
         22
-      ]
-    }
-  }, 
-  {
-    "pk": 9, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": null, 
       "name": "Move in/out", 
-      "description": "Forum for the move in/out committee"
+      "forum": 9
     }
   }, 
   {
     "pk": 10, 
     "model": "coop.committee", 
     "fields": {
-      "chair": 25, 
-      "name": "Welcoming", 
       "members": [
         25, 
         26
-      ]
-    }
-  }, 
-  {
-    "pk": 10, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": 25, 
       "name": "Welcoming", 
-      "description": "Forum for the welcoming committee"
+      "forum": 10
     }
   }, 
   {
     "pk": 11, 
     "model": "coop.committee", 
     "fields": {
-      "chair": 38, 
-      "name": "Participation", 
       "members": [
         38
-      ]
-    }
-  }, 
-  {
-    "pk": 11, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": 38, 
       "name": "Participation", 
-      "description": "Forum for the participation committee"
+      "forum": 11
     }
   }, 
   {
     "pk": 12, 
     "model": "coop.committee", 
     "fields": {
-      "chair": 52, 
-      "name": "Common room", 
       "members": [
         42, 
         43, 
         52, 
         65
-      ]
-    }
-  }, 
-  {
-    "pk": 12, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": 52, 
       "name": "Common room", 
-      "description": "Forum for the common room committee"
+      "forum": 12
     }
   }, 
   {
     "pk": 13, 
     "model": "coop.committee", 
     "fields": {
-      "chair": null, 
-      "name": "Social", 
       "members": [
         57
-      ]
-    }
-  }, 
-  {
-    "pk": 13, 
-    "model": "coop.forum", 
-    "fields": {
+      ], 
+      "chair": null, 
       "name": "Social", 
-      "description": "Forum for the social committee"
+      "forum": 13
     }
   }, 
   {
@@ -3953,14 +3979,16 @@
     "pk": 101, 
     "model": "coop.forum", 
     "fields": {
+      "url_name": "classifieds", 
       "name": "Classifieds", 
-      "description": "Use this forum to advertize give-aways , trades, sales, and wanted items."
+      "description": "Use this forum to advertize give-aways, trades, sales, and wanted items."
     }
   }, 
   {
     "pk": 102, 
     "model": "coop.forum", 
     "fields": {
+      "url_name": "general-discussion", 
       "name": "General Discussion", 
       "description": "General discussions about co-op business."
     }
@@ -3969,6 +3997,7 @@
     "pk": 1, 
     "model": "coop.thread", 
     "fields": {
+      "url_subject": "welcome", 
       "forum": 102, 
       "subject": "Welcome"
     }
@@ -3980,6 +4009,79 @@
       "post": "Hello fellow co-op members. Welcome to the Common Ground Co-op discussion forum. This is the first post of the \"Welcome\" thread of the \"General Discussion\" forum.", 
       "thread": 1, 
       "subject": "Welcome"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "coop.applicationsettings", 
+    "fields": {
+      "home_page": 1, 
+      "news": "Common Ground is currently accepting applications for our wait list!\r\n\r\nWe have chosen to preselect viable candidates for our co-op.\r\n\r\nDon\u2019t wait for these popular units to get taken: get on our wait list early.\r\n\r\nWe may call you for a pre-interview before a unit is available. If successful, you would be at the front of the line for the next vacancy.\r\n\r\nDownload our [application form](static/coop/files/cg_application.pdf) and mail it in soon.", 
+      "member_pages": "[]", 
+      "public_pages": "[2, 3, 4, 5, 6]", 
+      "coop_name": "Common Ground Co-op"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "coop.page", 
+    "fields": {
+      "content": "# Welcome\r\n\r\nNestled in the seaside community of Ocean Park, Common Ground Co-op is an ideal location for families.\r\n\r\nCreated 25 years ago, Common Ground was the dream of a group of people who wanted to have affordable housing in the luxurious South Surrey surroundings.\r\n\r\nLocated at 17 Avenue and 130 Street, Common Ground has undergone several changes, but one thing remains the core of our strength: we operate this housing complex through the hard work of our volunteer members.\r\n\r\nThe end result is a family feel amongst the members in the 46-unit complex, which includes one, two, three and four-bedroom units.\r\n\r\nIf you are interested in becoming part of this community, and are prepared to participate in this active group, please feel free to download a copy of our [application form](static/coop/files/cg_application.pdf).", 
+      "public": true, 
+      "url_title": "welcome", 
+      "title": "Welcome"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "coop.page", 
+    "fields": {
+      "content": "# About Common Ground\r\n\r\nWork began to develop Common Ground in 1978, building upon the vision of the Westminster Unitarian Church. After several years in preparation, the site broke ground on Feb. 13, 1982 and a year later, all 46 units were complete.\r\n\r\nLike other co-ops, the members here volunteer their time in order to ensure the day-to-day functioning of the strata.\r\n\r\nAt Common Ground, we have certain expectations of our members. At a minimum, we expect that members will attend monthly meetings (10 per year, held on the last Wednesday of the month), and that they will be active in one of our committees. We also hold spring and fall clean ups, which are mandatory for all members.\r\n\r\nThe benefit of being an active member at Common Ground is that it means you are not just renting, but are part of a community. This is one of the primary advantages of co-op living.\r\n\r\nOne of our big celebrations here at Common Ground is Canada Day, which often involves bouncy castles for kids, a day-long list of activities and races, a barbecue at day\u2019s end, and a trivia quiz about Canadiana. We are also abuzz with activity at Hallowe\u2019en (best decorated carport anyone?), Christmas and Easter.\r\n\r\nIf you feel you\u2019d like to be part of this type of living, please fill out and submit an [application](static/coop/files/cg_application.pdf)\r\n\r\n## About co-op housing in general\r\n\r\nThere are many kinds of co-operatives: food co-ops, co-op daycares, credit unions, retail co-ops, worker co-ops and housing co-ops. Any group of people can form a co-operative. The members own the co-operative and the co-operative provides a service they need. Housing co-operatives provide housing.\r\n\r\nSince the 1930s, Canadians have been building and living in housing co-ops. The people who live in the housing are the co-op\u2019s members. They elect, from among themselves, a board of directors to manage the business of the co-op.\r\n\r\nEach member has one vote. Members work together to keep their housing well-managed and affordable.\r\n\r\nOver the years, federal and provincial governments have funded various programs to help Canadians create non-profit housing co-ops. The co-ops developed under these programs provide good quality, affordable housing.  There are more than 255 non-profit housing co-ops comprising 14,300 units in British Columbia.\r\n\r\nAs a co-op member, you have security of tenure. This means that you can live in your home for as long as you wish if you follow the rules of the co-op and pay your housing charge (rent). As a co-op member, you have a say in decisions that affect your home. You and your neighbours own your homes co-operatively. Members form a community that works together to manage the co-op. Co-op communities are made up of all kinds of people&mdash;people with different backgrounds, incomes and special needs. These diverse and vibrant communities are the unique strength of the co-op housing movement.\r\n\r\nYou can learn more about co-op housing through the [Co-op Housing Federation of B.C.](http://www.chf.bc.ca/) or the [Co-operative Housing Federation of Canada](http://www.chfc.ca/).", 
+      "public": true, 
+      "url_title": "about-us", 
+      "title": "About Us"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "coop.page", 
+    "fields": {
+      "content": "# Housing Fees\r\n\r\n  <table>\r\n<thead>\r\n<tr>\r\n <th>Bedroom(s)</td>\r\n <th>Monthly fee</td>\r\n </tr>\r\n </thead>\r\n <tbody>\r\n <tr>\r\n <td>one</td>\r\n <td class=\"right-justify\">$732</td>\r\n </tr>\r\n <tr>\r\n <td>two</td>\r\n <td class=\"right-justify\">$933</td>\r\n </tr>\r\n <tr>\r\n <td>three</td>\r\n <td class=\"right-justify\">$1,055</td>\r\n </tr>\r\n <tr>\r\n <td>four</td>\r\n <td class=\"right-justify\">$1,179</td>\r\n </tr>\r\n </tbody>\r\n </table>\r\n\r\n There is also a one-time share cost of $2,200, which is due the month before occupancy.", 
+      "public": true, 
+      "url_title": "housing-fees", 
+      "trusted": true, 
+      "title": "Housing Fees"
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "coop.page", 
+    "fields": {
+      "content": "# A wee bit about Ocean Park \r\n\r\n## Pre-colonial \r\n\r\n Ocean Park was part of the territory of the Semiahmoo people, one of a group of tribes called the Straits Salish, a division of the Coast Salish.  \r\n\r\n The Semiahmoo people used this place for spiritual renewal and named the area \u201cKwomais\u201d which literally means \u201cplace of vision\u201d, because of its high bluffs and unobstructed views to the ocean and islands. Kwomais Point is marked on many early navigation maps and has long been used as a lookout point. For protection against the raids of the Yukulta people, the Semiahmoo built a fort in Ocean Park possibly between 1820 and 1830. The fort fell into disrepair in colonial times. Today, the site is a subdivision called Indian Fort Drive near the west end of 20th avenue.  \r\n\r\n## Colonial and modern \r\n\r\n In 1886, early pioneer Ben Stevenson acquired 350 acres (140 ha) and built a large home overlooking Semiahmoo Bay.  \r\n\r\n In the early 1900s, 136 acres (55 ha) were acquired in order to provide the members of the Methodist church a place where they could vacation.  Promotional materials named the area \u201cOcean Park\u201d, and in 1910 the church offered its first summer camp. In 1925 the Methodist Church joined with The United Church of Canada, and the camp was administered by British Columbia Conference of the church. Over the years bits of the property were sold for housing. In 2007 the last remaining 13 acres (5.3 ha) of the site were sold to the City of Surrey as parkland. Camp Kwomais was the second oldest camp accredited with BC Camping and the oldest camp using its original campsite.  \r\n\r\n In 1912, campers built a small shed beside the tracks of the recently-completed railroad. The Great Northern Railway reluctantly accepted it as a stop, thereby giving easier access to vacation spots in Ocean Park for residents of  Vancouver and New Westminster.  \r\n\r\n In 1921, Ocean Park opened its first post office, which was featured in \u201cRipley\u2019s Believe it or Not\u201d as \u201cthe world\u2019s smallest post office.\u201d The 6 feet (1.8 m)-by-6-feet building was later expanded to 6 feet (1.8 m)-by-12-feet.  \r\n\r\n In 1925, the Ocean Park Community Hall opened after a community fundraising campaign. The Hall continues to be the focus for the community and has been home to hundreds of social gatherings and special events for thousands over generations. The Hall\u2019s 75th anniversary in 2000 resulted in a special edition of the Ocean Parker, a volunteer community newspaper. The Hall is operated by the Ocean Park Community Association.  \r\n\r\n In the 1950s, Ocean Park\u2019s first residential telephone was installed at the house of firefighter Derek Uren.  \r\n\r\n In 1958, the volunteer fire hall was built by the community, seven years after a house fire killed a woman and her two sons.  \r\n\r\n In 1985, Fun Fun Park was created by community volunteers as the first \u201cVolunteers in Parks\u201d in BC. 12-year-old Jessica Tuttle was awarded 10 silver dollars for her winning entry in the naming contest.  \r\n\r\n In 2002, the community association\u2019s Ocean Park Area Livability Study identified three main community issues: 1) traffic concerns 2) lack of policing and vandalism 3) lack of community recreation opportunities, especially for youth and seniors.  \r\n\r\n ~Source: Wikipedia", 
+      "public": true, 
+      "url_title": "about-area", 
+      "title": "About Area"
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "coop.page", 
+    "fields": {
+      "content": "# Amenities and transportation\r\n\r\nOcean Park is served by two elementary schools: Ocean Cliff Elementary School and Laronde Elementary School, which offers a French Immersion program. St. Mark\u2019s Anglican Church opened in 1999. The [Surrey Public Library](http://www.surreylibraries.ca/) operates a branch in Ocean Park.\r\n\r\n## Parks &amp; trails\r\n\r\nThere are two waterfront walks in Ocean Park. 101 Steps Park, at the foot of 128th Street near Camp Kwomais, has stairs down to waterfront access and nature trails. Ocean Park Shoreline Walk is a tidal-beach walk.\r\n\r\n## Public Transit\r\n\r\nOcean Park has morning and afternoon commuter bus service to Vancouver operated by TransLink on route 352 Ocean Park/Vancouver via the South Surrey Park &amp; Ride.\r\n\r\n## Car\r\n\r\n Ocean Park has quick access to the U.S. border, as well as several routes to Vancouver. It is about a 15 minute drive to Highway 99 and about a 25 minute drive to the TransCanada Highway. Depending on traffic, it\u2019s about a 40 minute drive to Vancouver.", 
+      "public": true, 
+      "url_title": "amenities", 
+      "title": "Amenities"
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "coop.page", 
+    "fields": {
+      "content": "<h1>Contact Us</h1>\r\n\r\n<p>Common Ground Co-op is located near the centre of quiet Ocean Park.</p>\r\n\r\n<p>You may contact us via <a\r\n    href=\"mailto:info@cghousing.org?subject=Regarding%20Membership%20Applications\"\r\n    >email</a> or by mail:</p>\r\n\r\n<div class=\"address\">\r\n\r\n  <p>c/o Membership</p>\r\n\r\n  <p>Common Ground Co-op</p>\r\n\r\n  <p>1707 130 Street</p>\r\n\r\n  <p>Surrey, B.C.</p>\r\n\r\n  <p>V4A 4A2</p>\r\n\r\n</div>\r\n\r\n<br />\r\n\r\n\r\n<iframe width=\"425\" height=\"350\" frameborder=\"0\" scrolling=\"no\"\r\n  marginheight=\"0\" marginwidth=\"0\"\r\n  src=\"http://www.openstreetmap.org/export/embed.html?bbox=-122.86903381347656%2C49.03069336336908%2C-122.85626649856567%2C49.03563127490349&amp;layer=mapnik&amp;marker=49.03316238040217%2C-122.8626501560211\"\r\n  style=\"border: 1px solid black\"></iframe>\r\n<br/><small><a\r\n  href=\"http://www.openstreetmap.org/?mlat=49.03316&amp;mlon=-122.86265#map=17/49.03316/-122.86265&amp;layers=N\"\r\n  >View Larger Map</a></small>\r\n", 
+      "public": true, 
+      "url_title": "contact-us", 
+      "trusted": true, 
+      "title": "Contact Us"
     }
   }
 ]

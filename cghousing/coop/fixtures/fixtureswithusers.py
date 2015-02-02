@@ -4,6 +4,7 @@ file. Write this to disk as a new fixtures file for: ./fixtureswithusers.json.
 
 """
 
+import string
 import json
 import pprint
 import copy
@@ -71,11 +72,21 @@ def committee2forum(committee):
     forum['fields']['name'] = committee['fields']['name']
     forum['fields']['description'] = u'Forum for the %s committee' % (
         committee['fields']['name'].lower())
+    forum['fields']['url_name'] = name2url(forum['fields']['name'])
     return forum
+
+# Converts a name (a string) to something that can be part of a URL
+# WARN: non-dry copy from coop/views.py
+def name2url(name):
+    valid_chars = "- %s%s" % (string.ascii_letters, string.digits)
+    url = ''.join(c for c in name if c in valid_chars)
+    url = url.replace(' ','-').lower()
+    return url
 
 member_ids = []
 users = []
 committees = []
+forums = []
 new_fixtures = []
 coop_committee_fixture = None
 
@@ -89,13 +100,16 @@ for fixture in fixtures:
         users.append(generate_user(fixture))
         member_ids.append(fixture['pk'])
 
+    if fixture['model'] == 'coop.forum':
+        fixture['fields']['url_name'] = name2url(fixture['fields']['name'])
+
     # Get the Coop Committee fixture.
     if fixture['model'] == 'coop.committee':
         if fixture.get('fields', {}).get('name') == u'Co-op':
             coop_committee_fixture = fixture
         else:
             new_fixtures.append(fixture)
-            new_fixtures.append(committee2forum(fixture))
+            forums.append(committee2forum(fixture))
     else:
         new_fixtures.append(fixture)
 
@@ -103,9 +117,8 @@ for fixture in fixtures:
 # All co-op members are members of the "Co-op Committee"
 coop_committee_fixture['fields']['members'] = member_ids
 
-new_fixtures = [
-    generate_superuser(),
-    coop_committee_fixture] + \
+new_fixtures = forums + \
+    [generate_superuser(), coop_committee_fixture] + \
     users + \
     new_fixtures
 

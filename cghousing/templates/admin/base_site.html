@@ -1,10 +1,13 @@
 {% extends "admin/base.html" %}
 {% load i18n %}
 
-{% block title %}{{ title }} | {% trans 'Django site admin' %}{% endblock %}
+{# {% block title %}{{ title }} | {% trans 'Django site admin' %}{% endblock %} #}
+{% block title %}Co-op admin site{% endblock %}
 
 {% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">{% trans 'Common Ground Co-op administration' %}</a></h1>
+<h1 id="site-name"><a href="{% url 'admin:index' %}"
+  >{% trans 'Common Ground Co-op administration' %}</a></h1>
+
 {% endblock %}
 
 {% block nav-global %}{% endblock %}

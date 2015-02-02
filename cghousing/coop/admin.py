@@ -1,6 +1,8 @@
 from django.contrib import admin
 from coop.models import Person, Unit, UnitInspection, Committee, Move,\
-    BlockRepresentative, Forum, Thread, Post, Page, MeetingMinutes
+    BlockRepresentative, Forum, Thread, Post, Page, MeetingMinutes,\
+    ApplicationSettings
+
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
@@ -493,14 +495,19 @@ class PageAdmin(MyModelAdmin):
 
     list_display = (
         'title',
-        'get_content'
+        'id',
+        'get_content',
+        'public',
+        'trusted'
     )
 
     fieldsets = [
         (None, {
             'fields': [
                 'title',
-                'content']}),
+                'content',
+                'public',
+                'trusted']}),
         CREATE_MODIFY_INFO_
     ]
 
@@ -514,6 +521,30 @@ class PageAdmin(MyModelAdmin):
             return obj.content
 
     get_content.short_description = u'Content'
+
+
+class ApplicationSettingsAdmin(MyModelAdmin):
+
+    list_display = (
+        'coop_name',
+        'home_page',
+        'news',
+        'public_pages',
+        'member_pages'
+    )
+
+    fieldsets = [
+        (None, {
+            'fields': [
+                'coop_name',
+                'home_page',
+                'news',
+                'public_pages',
+                'member_pages']}),
+        CREATE_MODIFY_INFO_
+    ]
+
+    readonly_fields = READONLY_FIELDS_
 
 
 class MeetingMinutesAdmin(MyModelAdmin):
@@ -547,6 +578,7 @@ class MeetingMinutesAdmin(MyModelAdmin):
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(MeetingMinutes, MeetingMinutesAdmin)
+admin.site.register(ApplicationSettings, ApplicationSettingsAdmin)
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(Committee, CommitteeAdmin)
 # admin.site.register(Move, MoveAdmin)

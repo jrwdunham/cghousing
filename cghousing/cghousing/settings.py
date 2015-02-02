@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -25,7 +24,10 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 
 # See https://docs.djangoproject.com/en/1.6/intro/tutorial02/#customizing-your-project-s-templates
-TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+TEMPLATE_DIRS = [
+    os.path.join(BASE_DIR, 'templates'),
+    os.path.join(BASE_DIR, 'templates/coop'),
+]
 
 ALLOWED_HOSTS = []
 
@@ -39,6 +41,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'markdown_deux',
     'coop'
 )
 
@@ -90,4 +94,19 @@ STATIC_URL = '/static/'
 # http://deathofagremmie.com/2014/05/24/retiring-get-profile-and-auth-profile-module/ and
 # https://docs.djangoproject.com/en/1.7/topics/auth/customizing/#extending-the-existing-user-model
 # AUTH_PROFILE_MODULE = 'accounts.Person'
+
+MARKDOWN_DEUX_STYLES = {
+    "trusted": {
+        "extras": {
+            "code-friendly": None,
+        },
+        "safe_mode": False,
+    },
+    "default": {
+        "extras": {
+            "code-friendly": None,
+        },
+        "safe_mode": "escape",
+    }
+}
 

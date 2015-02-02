@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% load markdown_deux_tags %}
+{% load humanize %}
+
+{% block body_class %}class="page"{% endblock %}
+
+
+{% block content %}
+
+<div id="content-main">
+
+  {% if page.trusted %}
+    {{ page.content|markdown:'trusted' }}
+  {% else %}
+    {{ page.content|markdown }}
+  {% endif %}
+
+</div>
+
+{% endblock %}
+

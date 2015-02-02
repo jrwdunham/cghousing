@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+
+{% block body_class %}class="page"{% endblock %}
+
+
+{% block content %}
+
+<div id="content-main">
+
+  <h1>Housing Fees</h1>
+
+  <table>
+
+    <thead>
+      <tr>
+        <th>Bedroom(s)</td>
+        <th>Monthly fee</td>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>one</td>
+        <td class="right-justify">$732</td>
+      </tr>
+
+      <tr>
+        <td>two</td>
+        <td class="right-justify">$933</td>
+      </tr>
+
+      <tr>
+        <td>three</td>
+        <td class="right-justify">$1,055</td>
+      </tr>
+
+      <tr>
+        <td>four</td>
+        <td class="right-justify">$1,179</td>
+      </tr>
+
+    </tbody>
+
+  </table>
+
+  <p>There is also a one-time share cost of $2,200, which is due the month
+  before occupancy.</p>
+
+</div>
+
+{% endblock %}
+

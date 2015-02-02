@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block body_class %}class="forum forum-threads"{% endblock %}
+
+
+{% block breadcrumbs %}
+  <a href="{% url 'coop:forums' %}">Forums</a>
+  &gt;
+  {{ forum.name }}
+{% endblock %}
+
+
+{% block content %}
+
+  <h1>{{ forum.name }} Forum</h1>
+
+  <p>{{ forum.description }}</p>
+
+  {% if forum.threads.count %}
+    <table>
+
+      <thead>
+        <tr>
+          <th class="subject">Subject</th>
+          <th class="poster">Poster</th>
+          <th class="views">Views</th>
+          <th class="replies">Replies</th>
+          <th class="last-post">Last post</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      {% for thread in forum.threads.all %}
+        <tr>
+          <td>
+            <a href="{% url 'coop:thread_view_by_url_subject' forum.url_name thread.url_subject %}"
+              >{{ thread.subject }}</a>
+          </td>
+          <td>
+            {% if thread.creator.first_name %}
+              {{ thread.creator.first_name }}
+              {{ thread.creator.last_name }}
+            {% else %}
+              {{ thread.creator|default:'system' }}
+            {% endif %}
+          </td>
+          <td class='center'>{{ thread.views }}</td>
+          <td class='center'>{{ thread.posts.count }}</td>
+          <td class='center'>
+            {% if thread.posts.last %}
+              <div class='date'>{{ thread.posts.last.datetime_created|date:'N j, Y, P' }}</div>
+              <div class='poster'>
+              {% if thread.posts.last.creator %}
+                by {{ thread.posts.last.creator.first_name }}
+                {{thread.posts.last.creator.last_name }}
+              {% else %}
+                by the system
+              {% endif %}
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+
+  {% else %}
+    <p>This forum contains no threads.</p>
+  {% endif %}
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+
