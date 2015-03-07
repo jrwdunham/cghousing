@@ -181,6 +181,13 @@ Deploying a Django app on WebFaction
 The WebFaction docs are good. See:
 
 - http://docs.webfaction.com/software/django/getting-started.html
+
+  - The screencast guide at the above URL worked. However, it was crucial to
+    configure Django properly by following the instructions at
+    http://docs.webfaction.com/software/django/getting-started.html#configuring-django
+  - http://docs.djangoproject.com/en/1.7
+  - http://docs.webfaction.com/software/django
+
 - http://docs.webfaction.com/software/django/config.html
 
 
