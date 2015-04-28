@@ -6,7 +6,7 @@ A web application for the Common Ground Housing Co-op.
 
 This repository is a Django (v. 1.6) web application for the Common Ground
 Co-op web site. It is currently in the requirements gathering and development
-stage.  Feel free to use this for your own housing co-op, or to contribute to
+stage. Feel free to use this for your own housing co-op, or to contribute to
 the development process.
 
 .. image:: cg-admin-screenshot.png
@@ -24,7 +24,7 @@ and start the live server.::
     $ git clone https://github.com/jrwdunham/cghousing.git
     $ cd cghousing
     $ python manage.py syncdb
-    $ python manage.py loaddata coop/fixtures/fixtures.json
+    $ python manage.py loaddata coop/fixtures/fixtureswithusers.json
     $ python manage.py runserver
 
 Voila! Visit http://127.0.0.1:8000/admin/coop/person/ to see a bunch of pretend
