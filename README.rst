@@ -233,11 +233,11 @@ Detailed instructions
 
    ii. Add your domain to allowed hosts.::
 
-       ALLOWED_HOSTS = ['new.cghousing.webfactional.com']
+      ALLOWED_HOSTS = ['new.cghousing.webfactional.com']
 
    iii. Configure the static root.::
 
-        `STATIC_ROOT = '/home/cghousing/webapps/cghousing_django_static'`
+      STATIC_ROOT = '/home/cghousing/webapps/cghousing_django_static'
 
 7. Configure Apache by editing `apache2/conf/httpd.conf`
 
