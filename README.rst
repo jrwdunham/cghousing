@@ -185,9 +185,9 @@ The WebFaction docs are good. See:
   - The screencast guide at the above URL worked. However, it was crucial to
     configure Django properly by following the instructions at
     http://docs.webfaction.com/software/django/getting-started.html#configuring-django
-  - http://docs.djangoproject.com/en/1.7
-  - http://docs.webfaction.com/software/django
 
+- http://docs.djangoproject.com/en/1.7
+- http://docs.webfaction.com/software/django
 - http://docs.webfaction.com/software/django/config.html
 
 
@@ -203,6 +203,7 @@ Detailed instructions
 3. Create two new applications (via the webfaction GUI):
 
    i. a Django (v. 1.7.7 Python 2.7) app called, e.g., "cghousing_django" and
+
    ii. a static (static only, no .htaccess) app called, e.g.,
        "cghousing_django_static" with a URL like
        "http://new.cghousing.webfactional.com/static".
@@ -222,35 +223,35 @@ Detailed instructions
 6. Use your favourite text editor (which, obviously, is vim) to make the
    following changes to `cghousing/cghousing/cghousing/settings.py`.
 
-   i. Add our previously created PostgreSQL database to `DATABASES`.::
+   i. Add our previously created PostgreSQL database to ``DATABASES``.::
 
-      'ENGINE': 'django.db.backends.postgresql_psycopg2',
-      'NAME': 'cghousing',
-      'USER': 'cghousing_admin',
-      'PASSWORD': '<your_password>',
-      'HOST': '',
-      'PORT': ''
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'cghousing',
+        'USER': 'cghousing_admin',
+        'PASSWORD': '<your_password>',
+        'HOST': '',
+        'PORT': ''
 
    ii. Add your domain to allowed hosts.::
 
-      ALLOWED_HOSTS = ['new.cghousing.webfactional.com']
+        ALLOWED_HOSTS = ['new.cghousing.webfactional.com']
 
    iii. Configure the static root.::
 
-      STATIC_ROOT = '/home/cghousing/webapps/cghousing_django_static'
+            STATIC_ROOT = '/home/cghousing/webapps/cghousing_django_static'
 
 7. Configure Apache by editing `apache2/conf/httpd.conf`
 
    i. Update `WSGIDaemonProcess` to::
 
-      WSGIDaemonProcess cghousing_django processes=2 threads=12 \
+        WSGIDaemonProcess cghousing_django processes=2 threads=12 \
         python-path=/home/cghousing/webapps/cghousing_django:\
         /home/cghousing/webapps/cghousing_django/cghousing/cghousing:\
         /home/cghousing/webapps/cghousing_django/lib/python2.7
 
    ii. Update `WSGIScriptAlias` to::
 
-       WSGIScriptAlias / \
+         WSGIScriptAlias / \
          /home/cghousing/webapps/cghousing_django/\
          cghousing/cghousing/cghousing/wsgi.py
 
@@ -275,21 +276,4 @@ Detailed instructions
      python2.7 manage.py loaddata coop/fixtures/fixtureswithusers.json
      cd ../..
      ./apache2/bin/restart
-
-
-
-References
-================================================================================
-
-- http://zanshin.net/2012/05/29/migrating-from-bluehost-to-webfaction/
-
-
-
-Installing Django on BlueHost
---------------------------------------------------------------------------------
-
-For instructions on installing Django on BlueHost, see
-
-http://blog.ruedaminute.com/2011/01/2011-installation-instructions-for-django-on-bluehost/
-
 
