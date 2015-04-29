@@ -11,8 +11,9 @@ import copy
 import os
 
 this_path = os.path.dirname(os.path.realpath(__file__))
-fixtures_path = os.path.join(this_path, 'fixtures.json')
-new_fixtures_path = os.path.join(this_path, 'fixtureswithusers.json')
+
+fixtures_path = os.path.join(this_path, 'fixtures_real_original.json')
+new_fixtures_path = os.path.join(this_path, 'fixtureswithusers_real.json')
 
 # pk, username, first_name, last_name, and email are taken from coop.person
 # password is just the default Django 1.7 PBKDF2 password for 'a'.
@@ -40,7 +41,7 @@ FORUM_TEMPLATE = {
     }
 }
 
-# If we user 1 for a user index, Django's superuser (created via `manage.py
+# If we use 1 for a user index, Django's superuser (created via `manage.py
 # syncdb` will be overwritten.
 def memberid2userid(memberid):
     return 10 + memberid

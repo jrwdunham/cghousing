@@ -61,9 +61,9 @@ target/
 
 # Particular to this project
 cghousing/polls/
+cghousing/coop/fixtures/private_fixtures/
 cghousing/coop/fixtures/fixtures_real.json
+README_PRIVATE.rst
 
 .python-version
-
-README_PRIVATE.rst
 
