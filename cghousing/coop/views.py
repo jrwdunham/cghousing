@@ -312,9 +312,9 @@ def handle_authenticate_request(request):
             redirect_to = request.POST.get('next', reverse('coop:index'))
             return HttpResponseRedirect(redirect_to)
         else:
-            return HttpResponse('you suck')
+            return HttpResponse('Authentication failed.')
     else:
-        return HttpResponse('you REALLY suck')
+        return HttpResponse('Authentication failed.')
 
 
 def logout_view(request):
