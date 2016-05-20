@@ -6,7 +6,7 @@
 
 
 {% block breadcrumbs %}
-  <a href="{% url 'coop:forums' %}">Forums</a>
+  <a href="{% url 'coop:forums' %}" title="View all forums">Forums</a>
   &gt;
   {{ forum.name }}
 {% endblock %}
@@ -18,6 +18,8 @@
 
   <p>{{ forum.description }}</p>
 
+  <a class="action-link" href="{% url 'coop:thread_new' forum.url_name %}">Create a new thread</a>
+
   {% if forum.threads.count %}
     <table>
 
@@ -26,7 +28,7 @@
           <th class="subject">Subject</th>
           <th class="poster">Poster</th>
           <th class="views">Views</th>
-          <th class="replies">Replies</th>
+          <th class="posts">Posts</th>
           <th class="last-post">Last post</th>
         </tr>
       </thead>

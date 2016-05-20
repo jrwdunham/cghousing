@@ -1,5 +1,6 @@
 import string
 import json
+import pprint
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
@@ -10,7 +11,8 @@ from django.http import Http404
 from django.views.generic import ListView, DetailView, TemplateView, View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.forms import Form, ModelForm, CharField, Textarea, ModelChoiceField
+from django.contrib import messages
+from django.forms import Form, ModelForm, CharField, Textarea, ModelChoiceField, ValidationError
 
 from coop.models import Forum, Thread, Post, ApplicationSettings, Page
 
@@ -90,8 +92,10 @@ def forums_view(request):
         'forum_list': {
             'general_forums': forum_list,
             'committee_forums': committee_forum_list
-        },
-        'current_page': 'forums'}
+            },
+        'current_page': 'forums',
+        'request': request
+        }
     context.update(get_global_context())
     return render(request, 'coop/forum_list.html', context)
 
@@ -181,8 +185,11 @@ def page_view(request, pk):
 
 
 
-# View a thread, given its url-subject in the URL.
 def thread_view_by_url_subject(request, url_name, url_subject):
+    """View a thread, given its url-subject in the URL.
+
+    """
+
     try:
         thread = Thread.objects.filter(url_subject=url_subject).first()
         if not thread:
@@ -194,12 +201,52 @@ def thread_view_by_url_subject(request, url_name, url_subject):
 
 # GET /thread/pk displays thread;
 # POST /thread/pk handles submission of form for adding a post to a thread.
-def thread_detail(request, pk):
+def thread_detail(request, url_name, pk):
+    """View a thread, given its primary key `pk`. Note: `url_name` belongs to
+    the forum that the thread belongs to.
+
+    """
+
     try:
         thread = Thread.objects.get(pk=pk)
         return return_thread(request, thread)
     except:
         raise Http404("Thread does not exist")
+
+
+@login_required
+def thread_new(request, url_name):
+    """Display page for creating a new thread.
+
+    """
+
+    forum = Forum.objects.filter(url_name=url_name).first()
+    form = ThreadForm(forum)
+    context = {'form': form, 'forum': forum}
+    context.update(get_global_context())
+    return render(request, 'coop/thread_new.html', context)
+
+
+def thread_save(request, url_name):
+    """Create a new thread.
+
+    """
+
+    if request.method == 'POST':
+        forum = Forum.objects.filter(url_name=url_name).first()
+        form = ThreadForm(forum, request.POST)
+        if form.is_valid():
+            new_thread = Thread(**form.cleaned_data)
+            new_thread.save()
+            # Always return an HttpResponseRedirect after successfully dealing
+            # with POST data. This prevents data from being posted twice if a
+            # user hits the Back button.
+            return HttpResponseRedirect(reverse('coop:thread',
+                kwargs={'url_name': forum.url_name, 'pk': new_thread.id}))
+        else:
+            context = {'form': form, 'forum': forum}
+            context.update(get_global_context())
+            return render(request, 'coop/thread_new.html', context)
 
 
 def return_thread(request, thread):
@@ -208,22 +255,34 @@ def return_thread(request, thread):
     if request.method == 'POST':
         new_post = None
         try:
+            reply_to = request.POST.get('reply_to')
+            if reply_to:
+                reply_to = Post.objects.get(pk=reply_to)
             params = {
-                'reply_to': Post.objects.get(pk=request.POST['reply_to']),
+                'reply_to': reply_to,
                 'thread': Thread.objects.get(pk=request.POST['thread']),
                 'subject': request.POST['subject'],
                 'post': request.POST['post']
             }
             for key, val in params.items():
-                if not val:
+                if key != 'reply_to' and not val:
                     context['errors'].setdefault(key, []).append(
                         'This field is required.')
             if context['errors']:
                 context['attempted_post'] = params
             else:
                 new_post = Post(**params)
+                new_post.creator = new_post.modifier = request.user
                 new_post.save()
+                # Always return an HttpResponseRedirect after successfully dealing
+                # with POST data. This prevents data from being posted twice if a
+                # user hits the Back button.
+                return HttpResponseRedirect(reverse('coop:thread',
+                    kwargs={
+                        'url_name': new_post.thread.forum.url_name,
+                        'pk': new_post.thread.id}))
         except Exception as e:
+            print 'got an exception'
             print e
         finally:
             return render(request, 'coop/thread_detail.html', context)
@@ -239,10 +298,112 @@ class ForumResultsView(GlobalContextMixin, DetailView):
     template_name = 'coop/results.html'
 
 
-# Display page for creating a new forum.
+class ForumForm(ModelForm):
+    """Form for creating new forums.
+
+    """
+
+    class Meta:
+        model = Forum
+        fields = ['name', 'description']
+
+    def clean(self):
+        cleaned_data = super(ForumForm, self).clean()
+        url_name = name2url(cleaned_data.get('name', ''))
+        existing_forum = Forum.objects.filter(url_name=url_name).first()
+        if existing_forum:
+            raise ValidationError('The name %(name)s is too similar to an'
+                ' existing name', params={'name': cleaned_data['name']},
+                code='invalid')
+        cleaned_data['url_name'] = url_name
+        return cleaned_data
+
+
+class ThreadForm(ModelForm):
+    """Form for creating new threads.
+
+    """
+
+    def __init__(self, forum, *args, **kwargs):
+        self.forum = forum
+        return super(ThreadForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Thread
+        fields = ['subject']
+
+    def clean(self):
+        cleaned_data = super(ThreadForm, self).clean()
+        url_subject = name2url(cleaned_data.get('subject', ''))
+        existing_thread = Thread.objects.filter(forum__id=self.forum.id)\
+            .filter(url_subject=url_subject).first()
+        if existing_thread:
+            raise ValidationError('The subject %(subject)s is too similar to an'
+            ' existing one', params={'subject': cleaned_data['subject']},
+            code='invalid')
+        cleaned_data['url_subject'] = url_subject
+        cleaned_data['forum'] = self.forum
+        return cleaned_data
+
+
 @login_required
 def forum_new(request):
-    return render(request, 'coop/forum_new.html')
+    """Display page for creating a new forum.
+
+    """
+
+    form = ForumForm()
+    context = {'form': form}
+    context.update(get_global_context())
+    return render(request, 'coop/forum_new.html', context)
+
+
+def forum_save(request):
+    """Create a new forum.
+
+    """
+
+    if request.method == 'POST':
+        form = ForumForm(request.POST)
+        if form.is_valid():
+            new_forum = form.save()
+            # Always return an HttpResponseRedirect after successfully dealing
+            # with POST data. This prevents data from being posted twice if a
+            # user hits the Back button.
+            return HttpResponseRedirect(reverse('coop:forum',
+                kwargs={'pk': new_forum.id}))
+        else:
+            context = {'form': form}
+            context.update(get_global_context())
+            return render(request, 'coop/forum_new.html', context)
+
+
+def forum_save_DEPRECATED(request):
+    """Create a new forum.
+
+    """
+
+    try:
+        name = request.POST['name']
+        url_name = name2url(name)
+        new_forum = Forum(
+            name=name,
+            url_name=url_name,
+            description=request.POST['description'],
+        )
+        new_forum.save()
+    except:
+        # Redisplay the forum creation form.
+        # TODO: put input data back in.
+        return render(request, 'coop/forum_new.html', {
+            'error_message': "There was an error: could not create forum.",
+            'forum': new_forum
+        })
+    else:
+        # Always return an HttpResponseRedirect after successfully dealing
+        # with POST data. This prevents data from being posted twice if a
+        # user hits the Back button.
+        return HttpResponseRedirect(reverse('coop:forum_results', args=(new_forum.id,)))
 
 
 def post_save(request):
@@ -273,25 +434,6 @@ def get_post_save_next(request, new_post):
     else:
         return reverse('coop:forums')
 
-def forum_save(request):
-    try:
-        new_forum = Forum(
-            name=request.POST['name'],
-            description=request.POST['description'],
-        )
-        new_forum.save()
-    except:
-        # Redisplay the forum creation form.
-        # TODO: put input data back in.
-        return render(request, 'coop/forum_new.html', {
-            'error_message': "There was an erorr: could not create forum."
-        })
-    else:
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('coop:forum_results', args=(new_forum.id,)))
-
 
 # Show the login form
 def show_login_form(request):
@@ -312,9 +454,11 @@ def handle_authenticate_request(request):
             redirect_to = request.POST.get('next', reverse('coop:index'))
             return HttpResponseRedirect(redirect_to)
         else:
-            return HttpResponse('Authentication failed.')
+            messages.add_message(request, messages.INFO, 'Authentication failed.')
+            return HttpResponseRedirect('/accounts/login/')
     else:
-        return HttpResponse('Authentication failed.')
+        messages.add_message(request, messages.INFO, 'Authentication failed.')
+        return HttpResponseRedirect('/accounts/login/')
 
 
 def logout_view(request):

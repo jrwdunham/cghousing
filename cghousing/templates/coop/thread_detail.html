@@ -2,18 +2,17 @@
 
 {% load humanize %}
 {% load coop_extras %}
+{% load markdown_deux_tags %}
 
 {% block body_class %}class="thread"{% endblock %}
 
 
 {% block breadcrumbs %}
-  <a href="{% url 'coop:forums' %}">Forums</a>
+  <a href="{% url 'coop:forums' %}" title="View all forums">Forums</a>
   &gt;
   <a href="{% url 'coop:forum_by_url_name' thread.forum.url_name %}"
+     title="View the {{ thread.forum.name }} forum"
     >{{ thread.forum.name }}</a>
-  &gt;
-  <a href="{% url 'coop:forum_by_url_name' thread.forum.url_name %}"
-    >Threads</a>
   &gt;
   {{ thread.subject }}
 {% endblock %}
@@ -56,9 +55,10 @@
                     <div class="post-subject">{{ post.subject|default:'' }}</div>
                     <div class="post-reply-to">
                       {% if post.reply_to %}
-                        [Re: <a href="#{{ post.reply_to.id }}"
+                        [<a href="#{{ post.reply_to.id }}"
                           title="Jump to the post that this post is a reply to."
-                          >{{ post.reply_to.creator|coop_user_name }}</a>]
+                          >{{ post.reply_to.subject|truncatechars:20 }} by
+                          {{ post.reply_to.creator|coop_user_name }}</a>]
                       {% endif %}
                     </div>
                   </div>
@@ -73,7 +73,8 @@
                   </div>
 
                   <div class="post-meta-right">
-                    <a class="jump-to-reply" post-id="{{ post.id }}"
+                    <a class="jump-to-reply" data-post-id="{{ post.id }}"
+                      data-post-subject="{{ post.subject }}"
                       href="#reply-to-form" title="Reply to this post">
                       <i class="fa fa-fw fa-reply"></i>
                     <span>Reply</span>
@@ -83,7 +84,7 @@
                 </td>
               </tr>
               <tr>
-                <td class="post-post">{{ post.post }}</td>
+                <td class="post-post">{{ post.post|markdown }}</td>
               </tr>
             </tbody>
           </table>
@@ -98,14 +99,20 @@
             <tbody>
               <tr>
                 <td>
+                  {% if thread.posts.all %}
                   <h2>Reply:</h2>
+                  {% else %}
+                  <h2>First Post:</h2>
+                  {% endif %}
                   <a name="reply-to-form"></a>
                   <form class="post-quick-reply"
-                    action="{% url 'coop:thread' thread.id %}" method="post">
+                    action="{% url 'coop:thread' url_name=thread.forum.url_name pk=thread.id %}"
+                    method="post">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="/thread/2/" />
                     <input type="hidden" name="thread" value="{{ thread.id }}" />
 
+                    {% if thread.posts.all %}
                     <div class="{{ 'reply_to'|form_row_class:errors }}">
                       <div>
                         <label for="reply_to">Reply to:</label>
@@ -132,6 +139,7 @@
                         </select>
                       </div>
                     </div>
+                    {% endif %}
 
                     <div class="{{ 'subject'|form_row_class:errors }}">
                       <ul class="errorlist">
@@ -144,8 +152,10 @@
                         <input type="text" maxlength="200" name="subject"
                           {% if attempted_post %}
                             value="{{ attempted_post.subject }}" />
-                          {% else %}
+                          {% elif thread.posts.all %}
                             value="Re: {{ thread.subject }}" />
+                          {% else %}
+                            value="{{ thread.subject }}" />
                           {% endif %}
                       </div>
                     </div>
@@ -168,7 +178,7 @@
                     </div>
 
                     <div class="form-row">
-                      <input type="submit" value="Post" />
+                      <input type="submit" value="Create Post" />
                     </div>
 
                   </form>
@@ -188,12 +198,14 @@
     // textarea focused.
     $('a.jump-to-reply').click(function(e){
       e.preventDefault();
-      var postId = $(this).attr('post-id');
+      var postId = $(this).data('post-id');
+      var postSubject = $(this).data('post-subject');
       $('select[name=reply_to] option').each(function(){
-        if (postId === $(this).val()) {
-          $(this).attr('selected', 'selected');
+        if (postId == $(this).val()) {
+          $('select[name=reply_to]').val(postId);
         }
       });
+      $('input[name=subject]').val(postSubject);
       $('textarea[name=post]').first().focus();
     });
   </script>

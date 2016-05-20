@@ -560,6 +560,11 @@ ul.errorlist li
   background: #ffefef;
 }
 
+.error
+{
+  color: red;
+}
+
 div.breadcrumbs
 {
   background: #fff url(../images/nav-bg-reverse.gif) 0 -10px repeat-x;
@@ -569,5 +574,40 @@ div.breadcrumbs
   border-top: 1px solid #fff;
   border-bottom: 1px solid #ddd;
   text-align: left;
+}
+
+form.default-form li
+{
+  margin-top: 1em;
+  list-style-type: none;
+}
+
+form.default-form label
+{
+  display: inline-block;
+  width: 10em;
+}
+
+form.default-form input[type=text]
+{
+  line-height: 1.5em;
+}
+
+input[type=text],
+textarea,
+form.default-form input[type=text],
+form.default-form textarea
+{
+  width: 50em;
+  border: 1px solid #ccc;
+  font-size: 12pt;
+  padding: 0.5em;
+  margin: 0.25em 0;
+}
+
+a.action-link
+{
+  display: inline-block;
+  margin-bottom: 1em;
 }
 

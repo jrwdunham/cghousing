@@ -4,12 +4,20 @@
 
 {% block body_class %}class="forum"{% endblock %}
 
+{% block breadcrumbs %}
+  <a href="{% url 'coop:forums' %}">Forums</a>
+{% endblock %}
+
 {% block content %}
   <h1>Forums</h1>
 
   <p>Welcome to our members-only forums page. Forums can be used for discussions
   about issues that matter to the co-op. Click on the name of a forum to read the
   conversations and/or make your own posts.</p>
+
+  {% if request.user.is_superuser %}
+    <a class="action-link" href="{% url 'coop:forum_new'%}">Create a new forum</a>
+  {% endif %}
 
   {% for forum_category, forum_sublist in forum_list.items %}
     {% if forum_sublist %}
@@ -45,7 +53,9 @@
             <td class='center-middle'>
               {% if forum.most_recent_post %}
                 <div>
-                  <a href="#">{{ forum.most_recent_post.subject|truncatechars:26|default:'' }}</a>
+                    <a href="{% url 'coop:thread' url_name=forum.url_name pk=forum.most_recent_post.thread.id %}"
+                        >{{ forum.most_recent_post.subject|truncatechars:26|default:'' }}</a>
+
                 </div>
                 {% if forum.most_recent_post.creator %}
                   ({{ forum.most_recent_post.creator.first_name }}
