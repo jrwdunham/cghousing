@@ -20,28 +20,35 @@ from coop.models import Forum, Thread, Post, ApplicationSettings, Page
 # Global Template Context Stuff
 ################################################################################
 
-# Return a context dict that all templates need.
-# Includes the active application settings model.
 def get_global_context():
+    """Return a context dict that all templates need. Includes the active
+    application settings model.
+
+    """
+
     app_settings = get_application_settings()
     try:
         public_page_ids = json.loads(app_settings.public_pages)
     except:
         public_page_ids = []
-    pages = Page.objects.only('title', 'url_title').filter(id__in=public_page_ids)
+    pages = Page.objects.only('title', 'url_title')\
+        .filter(id__in=public_page_ids)
     pages = dict((p.id, p) for p in pages)
-
     context = {
         'app_settings': app_settings,
         'coop_dynamic_pages': (
+            ('minutes', 'Minutes'),
             ('forums', 'Forums'),
+            ('pages', 'Pages'),
         )
     }
     for id_ in public_page_ids:
         page = pages.get(id_)
         if page:
-            context.setdefault('coop_static_pages', []).append((page.url_title, page.title))
+            context.setdefault('coop_static_pages', [])\
+                .append((page.url_title, page.title))
     return context
+
 
 def get_application_settings():
     return ApplicationSettings.objects.last()
@@ -80,9 +87,12 @@ def index_view(request):
 # Co-op Dynamic Page Views
 ################################################################################
 
-# View a forum
 @login_required
 def forums_view(request):
+    """Display the list of forums at /forums
+
+    """
+
     forums = Forum.objects.order_by('name')
     forums = [get_forum_posts(forum) for forum in forums]
     forums = [get_forum_most_recent_post(forum) for forum in forums]
@@ -98,6 +108,19 @@ def forums_view(request):
         }
     context.update(get_global_context())
     return render(request, 'coop/forum_list.html', context)
+
+
+@login_required
+def pages_view(request):
+    pages = Page.objects.order_by('title')
+    context = {
+        'pages': pages,
+        'current_page': 'pages',
+        'request': request
+        }
+    context.update(get_global_context())
+    return render(request, 'coop/page_list.html', context)
+
 
 # Input: list of forum models; output: 2-tuple of forum models.
 def split_committee_forums(forums):
@@ -182,6 +205,22 @@ def page_view_by_url_title(request, url_title):
 def page_view(request, pk):
     page = Page.objects.get(pk=pk)
     return return_page(request, page)
+
+
+@login_required
+def minutes_view(request):
+    """Display the minutes page, if there is one.
+
+    url(r'^minutes/$', views.minutes_vew, name='minutes'),
+
+    """
+
+    minutes_page = Page.objects.filter(title='Minutes').first()
+    if minutes_page:
+        return return_page(request, minutes_page)
+    else:
+        raise Http404("There is no minutes page")
+
 
 
 

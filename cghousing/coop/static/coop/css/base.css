@@ -82,6 +82,11 @@ a:hover {
   margin-top: 100px;
 }
 
+#content
+{
+  padding-top: 1em;
+}
+
 .login #content
 {
   width: 90%;
@@ -92,15 +97,6 @@ a:hover {
 .login #rightbar
 {
   width: 0%;
-}
-
-#content
-{
-  /* margin: 10px 15px; */
-  /* margin: 0.7em 1em; */
-  margin: 1%;
-  display: inline-block;
-  width: 33%;
 }
 
 #content-main
@@ -167,18 +163,6 @@ body.login
   background-color: #eee;
 }
 
-.page #content
-{
-  /* width: 500px; */
-  width: 35%;
-}
-
-.forum #content,
-.thread #content
-{
-  width: 55%;
-}
-
 td,
 th
 {
@@ -188,18 +172,21 @@ th
 
 .forum table
 {
+  table-layout: fixed;
   width: 100%;
   margin-bottom: 1em;
 }
 
 .thread table.posts
 {
+  table-layout: fixed;
   width: 100%;
 }
 
 .thread table.post,
 .thread table.post-quick-reply
 {
+  table-layout: fixed;
   /* margin: 0.5em; */
   margin: 0.5em 0;
   width: 100%;
@@ -341,32 +328,20 @@ td div.forum-description
 p
 {
   margin: 1em 0;
-  text-indent: 2em;
+  /* text-indent: 2em; */
   text-align: justify;
   line-height: 125%;
 }
 
-#leftbar
+@media screen and (max-width: 770px)
 {
-  float: left;
-  width: 15%;
-  /* margin: 0.7em 1em; */
-  margin: 1% 1% 1% 1%;
+  img#picture { display: none; }
 }
 
 img#picture
 {
   width: 100%;
   border-radius: 5px;
-}
-
-#rightbar
-{
-  float: right;
-  width: 15%;
-  /* margin: 0.7em 20em 0.7em 1em; */
-  /* margin: 0.7em 27% 0.7em 1em; */
-   margin: 1% 30% 1% 1%;
 }
 
 .module
@@ -411,10 +386,16 @@ img#picture
   margin: 0.5em;
 }
 
+h6 { font-size: 18px; }
+h5 { font-size: 18px; }
+h4 { font-size: 18px; }
+h3 { font-size: 18px; }
+h2 { font-size: 22px; }
+h1 { font-size: 28px; }
+
 h1
 {
-  font-size: 18px;
-  color: #666;
+  /* color: #666; */
   padding: 0 6px 0 0;
   margin: 0 0 .2em 0;
 }
@@ -424,7 +405,7 @@ h2
   margin-top: 1em;
 }
 
-h1, h2, h3, h4, h5
+h1, h2, h3, h4, h5, h6
 {
   font-weight: bold;
 }
@@ -609,5 +590,32 @@ a.action-link
 {
   display: inline-block;
   margin-bottom: 1em;
+}
+
+table.pages-table th.title
+{
+  width: 25%;
+  text-align: left;
+}
+
+.ok
+{
+  color: green;
+}
+
+table.pages-table th,
+table.pages-table td
+{
+  padding: 0.5em;
+}
+
+tr.even-row
+{
+  background-color: #DCDCDC;
+}
+
+.tester div
+{
+  border: 1px solid black;
 }
 

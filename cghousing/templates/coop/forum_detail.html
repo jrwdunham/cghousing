@@ -6,9 +6,15 @@
 
 
 {% block breadcrumbs %}
-  <a href="{% url 'coop:forums' %}" title="View all forums">Forums</a>
-  &gt;
-  {{ forum.name }}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:forums' %}" title="View all forums">Forums</a>
+                &gt;
+                {{ forum.name }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 

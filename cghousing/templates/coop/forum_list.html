@@ -5,7 +5,13 @@
 {% block body_class %}class="forum"{% endblock %}
 
 {% block breadcrumbs %}
-  <a href="{% url 'coop:forums' %}">Forums</a>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:forums' %}">Forums</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block content %}

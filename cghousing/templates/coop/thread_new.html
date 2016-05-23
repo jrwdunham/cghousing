@@ -5,12 +5,18 @@
 {% block body_class %}class="thread_new"{% endblock %}
 
 {% block breadcrumbs %}
-  <a href="{% url 'coop:forums' %}">Forums</a>
-  &gt;
-  <a href="{% url 'coop:forum' pk=forum.id %}"
-     >{{forum.name}}</a>
-  &gt;
-  <a href="{% url 'coop:thread_new' url_name=forum.url_name %}">new</a>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:forums' %}">Forums</a>
+                &gt;
+                <a href="{% url 'coop:forum' pk=forum.id %}"
+                    >{{forum.name}}</a>
+                &gt;
+                <a href="{% url 'coop:thread_new' url_name=forum.url_name %}">new</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block content %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% load markdown_deux_tags %}
+
+{% block body_class %}class="pages"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                Pages
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <h1>Pages</h1>
+
+  <p>Welcome to our members-only pages page. This page lists all of the pages
+  that have been created on this web site. Pages are private by default, which
+  means that only co-op members can see them. If you make a page public, then
+  anybody will be able to see it.</p>
+
+  <a class="action-link" href="{% url 'coop:forum_new'%}">Create a new page TODO</a>
+
+  {% if pages %}
+  <table class="pages-table">
+    <thead>
+      <tr>
+        <th class="title">Title</th>
+        <th class="threads">Preview</th>
+        <th class="last-post">Public</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for page in pages %}
+      <tr class="{% cycle 'even-row' 'odd-row' %}">
+        <td>{{ page.title }}</td>
+        <td>{{ page.content | truncatechars:100 }}</td>
+        {% if page.public %}
+          <td><i class="ok fa fa-fw fa-check-circle"></i></td>
+        {% else %}
+          <td><i class="error fa fa-fw fa-times-circle"></i></td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>There are no pages.</p>
+  {% endif %}
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+

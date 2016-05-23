@@ -4,8 +4,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static "coop/css/reset.css" %}" />
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
     <link rel="stylesheet" href="{% static "coop/css/base.css" %}" />
     <link rel='shortcut icon' href="{% static "coop/images/logo-196.png" %}"
         type='image/x-icon' />
@@ -15,10 +17,13 @@
 
 <body {% block body_class %}{% endblock %}>
 
-    <div id="container">
+    <div class="container-fluid">
 
+        <div class="row">
 
-        <div id="header">
+            <div class="col-sm-12">
+
+            <div id="header">
 
             {% block header %}
             <div id="branding">
@@ -39,93 +44,84 @@
             </div>
             {% endblock %}
 
-        </div>
+            </div>
 
-
-        <div class="breadcrumbs">
-
-            {% block breadcrumbs %}
-
-            {% endblock %}
+            </div>
 
         </div>
 
-
-        <div id="leftbar">
-
-        {% block leftbar %}
-
-        <img id="picture" src="{% static "coop/images/coop-214.jpg" %}" />
-
-        <div class="module">
-
-          <ul>
-            {% for url_title, title in coop_static_pages %}
-              {% if url_title == current_page %}
-                <li class='current-page'>{{ title }}</li>
-              {% else %}
-                <li><a href="{% url "coop:page_by_url_title" url_title %}">{{ title }}</a></li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-
-        </div>
-
-        {% if user.is_authenticated %}
-        <div class="module">
-          <h2>Members only</h2>
-          <ul>
-            {% for url_, title in coop_dynamic_pages %}
-              {% if url_ == current_page %}
-                <li class='current-page'>{{ title }}</li>
-              {% else %}
-                <li><a href="{% url "coop:"|add:url_ %}">{{ title }}</a></li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
-        {% endif %}
-
-        {% if user.is_staff %}
-        <div class="module">
-          <h2>Administrators</h2>
-          <ul>
-            <li><a href="{% url "admin:index" %}">Administrator Site</a></li>
-          </ul>
-        </div>
-        {% endif %}
-
+        {% block breadcrumbs %}
         {% endblock %}
 
+        <div class="row">
+
+            <div id="leftbar" class="col-xs-12 col-sm-3">
+
+                {% block leftbar %}
+
+                <img id="picture" src="{% static "coop/images/coop-214.jpg" %}" />
+                <div class="module">
+                    <ul>
+                    {% for url_title, title in coop_static_pages %}
+                        {% if url_title == current_page %}
+                        <li class='current-page'>{{ title }}</li>
+                        {% else %}
+                        <li><a href="{% url "coop:page_by_url_title" url_title %}">{{ title }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+
+                {% if user.is_authenticated %}
+                <div class="module">
+                    <h2>Members only</h2>
+                        <ul>
+                        {% for url_, title in coop_dynamic_pages %}
+                            {% if url_ == current_page %}
+                            <li class='current-page'>{{ title }}</li>
+                            {% else %}
+                            <li><a href="{% url "coop:"|add:url_ %}">{{ title }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                </div>
+                {% endif %}
+
+                {% if user.is_staff %}
+                <div class="module">
+                    <h2>Administrators</h2>
+                        <ul>
+                            <li><a href="{% url "admin:index" %}">Administrator Site</a></li>
+                        </ul>
+                </div>
+                {% endif %}
+
+                {% endblock %}
+
+            </div>
+
+
+            <div id="content" class="col-xs-12 col-sm-6">
+                {% block content %}{% endblock %}
+            </div>
+
+            <div id="rightbar" class="col-xs-12 col-sm-3">
+                {% block rightbar %}
+                <div class="module">
+                    <h2>News</h2>
+                    <div class="content">
+                    {{ app_settings.news | markdown }}
+                    </div>
+                </div>
+                {% endblock %}
+            </div>
+
         </div>
-
-        <div id="content">
-            {% block content %}{% endblock %}
-        </div>
-
-
-        <div id="rightbar">
-
-        {% block rightbar %}
-
-        <div class="module">
-
-          <h2>News</h2>
-
-          <div class="content">
-            {{ app_settings.news|markdown }}
-          </div>
-
-        </div>
-
-        {% endblock %}
-
-        </div>
-
 
         <div id="footer">
             {% block footer %}{% endblock %}
         </div>
+
     </div>
 
     <script type="text/javascript">

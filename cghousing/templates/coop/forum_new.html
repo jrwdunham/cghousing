@@ -5,9 +5,15 @@
 {% block body_class %}class="forum_new"{% endblock %}
 
 {% block breadcrumbs %}
-  <a href="{% url 'coop:forums' %}">Forums</a>
-  &gt;
-  <a href="{% url 'coop:forum_new' %}">new</a>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:forums' %}">Forums</a>
+                &gt;
+                <a href="{% url 'coop:forum_new' %}">new</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block content %}

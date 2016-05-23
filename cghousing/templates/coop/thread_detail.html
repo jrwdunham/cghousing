@@ -6,17 +6,21 @@
 
 {% block body_class %}class="thread"{% endblock %}
 
-
 {% block breadcrumbs %}
-  <a href="{% url 'coop:forums' %}" title="View all forums">Forums</a>
-  &gt;
-  <a href="{% url 'coop:forum_by_url_name' thread.forum.url_name %}"
-     title="View the {{ thread.forum.name }} forum"
-    >{{ thread.forum.name }}</a>
-  &gt;
-  {{ thread.subject }}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:forums' %}" title="View all forums">Forums</a>
+                &gt;
+                <a href="{% url 'coop:forum_by_url_name' thread.forum.url_name %}"
+                    title="View the {{ thread.forum.name }} forum"
+                    >{{ thread.forum.name }}</a>
+                &gt;
+                {{ thread.subject }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
-
 
 {% block content %}
 
@@ -73,12 +77,14 @@
                   </div>
 
                   <div class="post-meta-right">
+
                     <a class="jump-to-reply" data-post-id="{{ post.id }}"
                       data-post-subject="{{ post.subject }}"
                       href="#reply-to-form" title="Reply to this post">
                       <i class="fa fa-fw fa-reply"></i>
                     <span>Reply</span>
                     </a>
+
                   </div>
 
                 </td>

@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     url(r'^page/(?P<url_title>[-\w\d]+)/$', views.page_view_by_url_title,
         name='page_by_url_title'),
 
+    url(r'^minutes/$', views.minutes_view, name='minutes'),
+
     # forums
     url(r'^forums/$', views.forums_view, name='forums'),
     url(r'^forum/(?P<pk>\d+)/$', views.forum_view, name='forum'),
@@ -32,6 +34,9 @@ urlpatterns = patterns('',
 
     # posts
     url(r'^post/save$', views.post_save, name='post_save'), # e.g., /post/save
+
+    # pages
+    url(r'^pages/$', views.pages_view, name='pages'),
 
     # Authentication
     url(r'^accounts/login/$', views.show_login_form, name='login'),
