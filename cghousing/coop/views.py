@@ -5,7 +5,7 @@ import pprint
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-#from django.core.exceptions import RelatedObjectDoesNotExist
+#from django.core.exceptions import ObjectDoesNotExist
 from django.template import RequestContext, loader
 from django.http import Http404
 from django.views.generic import ListView, DetailView, TemplateView, View
@@ -292,7 +292,9 @@ def return_thread(request, thread):
     context = {'thread': thread, 'errors': {}}
     context.update(get_global_context())
     if request.method == 'POST':
-        new_post = None
+        post_id = request.POST.get('id')
+        if post_id:
+            post = Post.objects.get(pk=post_id)
         try:
             reply_to = request.POST.get('reply_to')
             if reply_to:
@@ -310,21 +312,31 @@ def return_thread(request, thread):
             if context['errors']:
                 context['attempted_post'] = params
             else:
-                new_post = Post(**params)
-                new_post.creator = new_post.modifier = request.user
-                new_post.save()
+                if post_id:
+                    post.modifier = request.user
+                    post.reply_to = params['reply_to']
+                    post.subject = params['subject']
+                    post.post = params['post']
+                else:
+                    post = Post(**params)
+                    post.creator = post.modifier = request.user
+                post.save()
                 # Always return an HttpResponseRedirect after successfully dealing
                 # with POST data. This prevents data from being posted twice if a
                 # user hits the Back button.
                 return HttpResponseRedirect(reverse('coop:thread',
                     kwargs={
-                        'url_name': new_post.thread.forum.url_name,
-                        'pk': new_post.thread.id}))
+                        'url_name': post.thread.forum.url_name,
+                        'pk': post.thread.id}))
         except Exception as e:
             print 'got an exception'
             print e
         finally:
-            return render(request, 'coop/thread_detail.html', context)
+            if post_id and context.get('errors'):
+                context['post'] = post
+                return render(request, 'coop/post_edit.html', context)
+            else:
+                return render(request, 'coop/thread_detail.html', context)
     else:
         thread.views += 1
         thread.save()
@@ -405,7 +417,8 @@ def forum_save(request):
     if request.method == 'POST':
         form = ForumForm(request.POST)
         if form.is_valid():
-            new_forum = form.save()
+            new_forum = Forum(**form.cleaned_data)
+            new_forum.save()
             # Always return an HttpResponseRedirect after successfully dealing
             # with POST data. This prevents data from being posted twice if a
             # user hits the Back button.
@@ -446,6 +459,10 @@ def forum_save_DEPRECATED(request):
 
 
 def post_save(request):
+    """TODO: is this function ever called? Check and destroy if not.
+
+    """
+
     new_post = None
     try:
         reply_to = Post.objects.get(pk=request.POST['reply_to'])
@@ -462,6 +479,22 @@ def post_save(request):
     finally:
         next_ = get_post_save_next(request, new_post)
         return HttpResponseRedirect(next_)
+
+
+def post_edit(request, pk):
+    """Display the form for editing an existing forum post.
+
+    """
+
+    try:
+        post = Post.objects.get(pk=pk)
+    except Post.DoesNotExist:
+        raise Http404("Post does not exist")
+    else:
+        context = {'post': post}
+        context.update(get_global_context())
+        return render(request, 'coop/post_edit.html', context)
+
 
 def get_post_save_next(request, new_post):
     next_ = request.POST.get('next')

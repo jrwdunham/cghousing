@@ -292,9 +292,15 @@ div.post-datetime
 
 .thread table.post td.post-meta div.post-meta-right
 {
-  width: 20%;
+  width: 30%;
   float: right;
   text-align: right;
+}
+
+.post-action-link
+{
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .thread table.post td.post-post

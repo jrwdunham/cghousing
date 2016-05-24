@@ -33,7 +33,7 @@ urlpatterns = patterns('',
         name='thread_save'),
 
     # posts
-    url(r'^post/save$', views.post_save, name='post_save'), # e.g., /post/save
+    url(r'^post/(?P<pk>\d+)/edit/$', views.post_edit, name='post_edit'),
 
     # pages
     url(r'^pages/$', views.pages_view, name='pages'),

@@ -78,11 +78,17 @@
 
                   <div class="post-meta-right">
 
-                    <a class="jump-to-reply" data-post-id="{{ post.id }}"
+                    <a href="{% url 'coop:post_edit' pk=post.id %}"
+                        class="post-action-link" title="Edit this post">
+                        <i class="fa fa-fw fa-pencil"></i>
+                        <span>Edit</span>
+                    </a>
+
+                    <a class="jump-to-reply post-action-link" data-post-id="{{ post.id }}"
                       data-post-subject="{{ post.subject }}"
                       href="#reply-to-form" title="Reply to this post">
-                      <i class="fa fa-fw fa-reply"></i>
-                    <span>Reply</span>
+                        <i class="fa fa-fw fa-reply"></i>
+                        <span>Reply</span>
                     </a>
 
                   </div>
