@@ -24,182 +24,109 @@
 
 {% block content %}
 
-  <h1>{{ thread.subject }} Thread</h1>
+    <h1>{{ thread.subject }} Thread</h1>
 
-  {% if errors %}
-  <p class="errornote">
-    <i class="fa fa-fw fa-exclamation-triangle"></i>Please correct the errors below.
-  </p>
-  {% endif %}
+    <table class="posts">
+        <tbody>
 
-  <table class="posts">
-    <tbody>
+        {% if thread.posts.count %}
+            {% for post in thread.posts.all %}
+            <tr>
+                <td class='post'>
+                    <a name="{{ post.id }}"></a>
+                    <table class='post'>
+                        <tbody>
 
-  {% if thread.posts.count %}
-    {% for post in thread.posts.all %}
-      <tr>
-        <td class='post'>
-          <a name="{{ post.id }}"></a>
-          <table class='post'>
-            <tbody>
-              <tr>
-                <td rowspan="2" class="poster">
-                  {% if post.creator %}
-                    {{ post.creator.first_name }}
-                    {{ post.creator.last_name }}
-                  {% else %}
-                    the system
-                  {% endif %}
+                            <tr>
+                                <td rowspan="2" class="poster">
+                                    {% if post.creator %}
+                                        {{ post.creator.first_name }}
+                                        {{ post.creator.last_name }}
+                                    {% else %}
+                                        the system
+                                    {% endif %}
+                                </td>
+
+                                <td class="post-meta">
+                                    <div class="post-meta-left">
+                                        <div class="post-meta-top">
+                                            <div class="post-subject"
+                                                >{{ post.subject|default:'' }}</div>
+                                            <div class="post-reply-to">
+                                                {% if post.reply_to %}
+                                                    [<a href="#{{ post.reply_to.id }}"
+                                                        title="Jump to the post that this post is a reply to."
+                                                        >{{ post.reply_to.subject|truncatechars:20 }}
+                                                            by
+                                                            {{ post.reply_to.creator|coop_user_name }}</a>]
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="post-meta-bottom">
+                                            <div class="post-datetime"
+                                                 title="when this post was made"
+                                            >{{ post.datetime_created|date:'N j, Y, P' }}
+                                            ({{ post.datetime_created|naturaltime }})</div>
+                                        </div>
+                                    </div>
+                                    <div class="post-meta-right">
+                                        <a href="{% url 'coop:post_edit' pk=post.id %}"
+                                            class="post-action-link"
+                                            title="Edit this post">
+                                            <i class="fa fa-fw fa-pencil"></i>
+                                            <span>Edit</span>
+                                        </a>
+                                        <a class="jump-to-reply post-action-link"
+                                            data-post-id="{{ post.id }}"
+                                            data-post-subject="{{ post.subject }}"
+                                            href="#reply-to-form"
+                                            title="Reply to this post">
+                                            <i class="fa fa-fw fa-reply"></i>
+                                            <span>Reply</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="post-post">{{ post.post|markdown }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </td>
-                <td class="post-meta">
+            </tr>
+            {% endfor %}
+        {% endif %}
 
-                  <div class="post-meta-left">
-
-                  <div class="post-meta-top">
-                    <div class="post-subject">{{ post.subject|default:'' }}</div>
-                    <div class="post-reply-to">
-                      {% if post.reply_to %}
-                        [<a href="#{{ post.reply_to.id }}"
-                          title="Jump to the post that this post is a reply to."
-                          >{{ post.reply_to.subject|truncatechars:20 }} by
-                          {{ post.reply_to.creator|coop_user_name }}</a>]
-                      {% endif %}
-                    </div>
-                  </div>
-
-                  <div class="post-meta-bottom">
-                    <!-- <div class="post-id">{{ post.id }}</div> -->
-                    <div class="post-datetime" title="when this post was made"
-                      >{{ post.datetime_created|date:'N j, Y, P' }}
-                        ({{ post.datetime_created|naturaltime }})</div>
-                  </div>
-
-                  </div>
-
-                  <div class="post-meta-right">
-
-                    <a href="{% url 'coop:post_edit' pk=post.id %}"
-                        class="post-action-link" title="Edit this post">
-                        <i class="fa fa-fw fa-pencil"></i>
-                        <span>Edit</span>
-                    </a>
-
-                    <a class="jump-to-reply post-action-link" data-post-id="{{ post.id }}"
-                      data-post-subject="{{ post.subject }}"
-                      href="#reply-to-form" title="Reply to this post">
-                        <i class="fa fa-fw fa-reply"></i>
-                        <span>Reply</span>
-                    </a>
-
-                  </div>
-
-                </td>
-              </tr>
-              <tr>
-                <td class="post-post">{{ post.post|markdown }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </td>
-      </tr>
-    {% endfor %}
-  {% endif %}
-
-      <tr>
-        <td class="post-quick-reply">
-          <table class="post-quick-reply">
-            <tbody>
-              <tr>
-                <td>
-                  {% if thread.posts.all %}
-                  <h2>Reply:</h2>
-                  {% else %}
-                  <h2>First Post:</h2>
-                  {% endif %}
-                  <a name="reply-to-form"></a>
-                  <form class="post-quick-reply"
-                    action="{% url 'coop:thread' url_name=thread.forum.url_name pk=thread.id %}"
-                    method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="next" value="/thread/2/" />
-                    <input type="hidden" name="thread" value="{{ thread.id }}" />
-
-                    {% if thread.posts.all %}
-                    <div class="{{ 'reply_to'|form_row_class:errors }}">
-                      <div>
-                        <label for="reply_to">Reply to:</label>
-                        <select name="reply_to">
-                          {% for post in thread.posts.all %}
-                            <option value="{{ post.id }}"
-                              {% if attempted_post.reply_to.id == post.id %}
-                                selected='selected'
-                              {% endif %}
-                              {% if forloop.first %}
-                                >[First Post] {{ post.subject }}
-                              {% elif forloop.last %}
-                                {% if not attempted_post %}
-                                  selected='selected'
+            <tr>
+                <td class="post-quick-reply">
+                    <table class="post-quick-reply">
+                        <tbody>
+                            <tr>
+                                <td>
+                                {% if thread.posts.all %}
+                                    <h2>Reply:</h2>
+                                {% else %}
+                                    <h2>First Post:</h2>
                                 {% endif %}
-                                >[Last Post] {{ post.subject }}
-                              {% else %}
-                                >{{ post.subject }}
-                              {% endif %}
-                            [{{ post.creator|coop_user_name }}
-                            {{ post.datetime_created|date:'N j, Y, P' }}]
-                            </option>
-                          {% endfor %}
-                        </select>
-                      </div>
-                    </div>
-                    {% endif %}
+                                    <a name="reply-to-form"></a>
 
-                    <div class="{{ 'subject'|form_row_class:errors }}">
-                      <ul class="errorlist">
-                        {% for error in errors.subject %}
-                          <li>{{ error }}</li>
-                        {% endfor %}
-                      </ul>
-                      <div>
-                        <label for="subject">Subject:</label>
-                        <input type="text" maxlength="200" name="subject"
-                          {% if attempted_post %}
-                            value="{{ attempted_post.subject }}" />
-                          {% elif thread.posts.all %}
-                            value="Re: {{ thread.subject }}" />
-                          {% else %}
-                            value="{{ thread.subject }}" />
-                          {% endif %}
-                      </div>
-                    </div>
+                                    <form class="post-quick-reply default-form"
+                                        action="{% url 'coop:thread' url_name=thread.forum.url_name pk=thread.id %}"
+                                        method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="thread"
+                                            value="{{ thread.id }}" />
+                                        {{ post_form.as_ul }}
+                                        <input type="submit" value="Create Post" />
+                                    </form>
 
-                    <div class="{{ 'post'|form_row_class:errors }}">
-                      <ul class="errorlist">
-                        {% for error in errors.post %}
-                          <li>{{ error }}</li>
-                        {% endfor %}
-                      </ul>
-                      <div>
-                        <label for="post">Post:</label>
-                        <textarea name="post"
-                          {% if attempted_post %}
-                            >{{ attempted_post.post }}</textarea>
-                          {% else %}
-                            ></textarea>
-                          {% endif %}
-                      </div>
-                    </div>
-
-                    <div class="form-row">
-                      <input type="submit" value="Create Post" />
-                    </div>
-
-                  </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </td>
-              </tr>
-            </tbody>
-          </table>
-        </td>
-      </tr>
+            </tr>
 
     </tbody>
   </table>

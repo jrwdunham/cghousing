@@ -152,7 +152,7 @@ form {
 {
   clear: both;
   padding: 6px;
-  width: 100%;
+  width: 25%;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -342,10 +342,32 @@ p
 @media screen and (max-width: 770px)
 {
   img#picture { display: none; }
+
+  .login .form-row #username,
+  .login .form-row #password
+  {
+    width: 100%;
+  }
+
+}
+
+input[type=text],
+textarea,
+select,
+form.default-form input[type=text],
+form.default-form textarea,
+select
+{
+  width: 100%;
+  border: 1px solid #ccc;
+  font-size: 12pt;
+  padding: 0.5em;
+  margin: 0.25em 0;
 }
 
 img#picture
 {
+  margin-top: 3px;
   width: 100%;
   border-radius: 5px;
 }
@@ -353,7 +375,8 @@ img#picture
 .module
 {
   border: 1px solid #ccc;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
+  margin-top: 3px;
   background: #fff;
 }
 
@@ -445,6 +468,8 @@ table thead
 th
 {
   font-weight: bold;
+  text-overflow: clip;
+  overflow: hidden;
 }
 
 td.right-justify
@@ -485,10 +510,16 @@ form.post-quick-reply div
   margin: 0.5em 0;
 }
 
-form.post-quick-reply input[type=text],
-form.post-quick-reply textarea
+form.post-quick-reply
 {
-  width: 90%;
+  padding: 1em 2em;
+}
+
+form.post-quick-reply input[type=text],
+form.post-quick-reply textarea,
+form.post-quick-reply select
+{
+  width: 100%;
 }
 
 textarea[name=post]
@@ -580,18 +611,6 @@ form.default-form input[type=text]
   line-height: 1.5em;
 }
 
-input[type=text],
-textarea,
-form.default-form input[type=text],
-form.default-form textarea
-{
-  width: 50em;
-  border: 1px solid #ccc;
-  font-size: 12pt;
-  padding: 0.5em;
-  margin: 0.25em 0;
-}
-
 a.action-link
 {
   display: inline-block;
@@ -623,5 +642,10 @@ tr.even-row
 .tester div
 {
   border: 1px solid black;
+}
+
+table.default-table td
+{
+  text-align: left;
 }
 

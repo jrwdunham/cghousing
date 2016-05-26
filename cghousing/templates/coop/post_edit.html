@@ -6,79 +6,35 @@
 
 {% block body_class %}class="thread"{% endblock %}
 
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:forums' %}" title="View all forums">Forums</a>
+                &gt;
+                <a href="{% url 'coop:forum_by_url_name' post.thread.forum.url_name %}"
+                    title="View the {{ post.thread.forum.name }} forum"
+                    >{{ post.thread.forum.name }}</a>
+                &gt;
+                <a href="{% url 'coop:thread_view_by_url_subject' post.thread.forum.url_name post.thread.url_subject %}"
+                   title="View the thread that this post belongs to"
+                   >{{ post.thread.subject }}</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
 {% block content %}
 
   <h1>Editing Post {{ post.id }}</h1>
 
-  {% if errors %}
-  <p class="errornote">
-    <i class="fa fa-fw fa-exclamation-triangle"></i>Please correct the errors
-    below.
-  </p>
-  {% endif %}
-
-  <form class="post-edit"
+  <form class="post-edit default-form"
     action="{% url 'coop:thread' post.thread.forum.url_name post.thread.id %}"
     method="post">
     {% csrf_token %}
-    {% if post.thread.posts.all|length > 1 %}
-    <div>
-      <div>
-        <label for="reply_to">Reply to:</label>
-        <select name="reply_to">
-          {% for post in post.thread.posts.all %}
-            <option value="{{ post.id }}"
-              {% if post.reply_to.id == post.id %}
-                selected='selected'
-              {% endif %}
-              {% if forloop.first %}
-                >[First Post] {{ post.subject }}
-              {% elif forloop.last %}
-                >[Last Post] {{ post.subject }}
-              {% else %}
-                >{{ post.subject }}
-              {% endif %}
-            [{{ post.creator|coop_user_name }}
-            {{ post.datetime_created|date:'N j, Y, P' }}]
-            </option>
-          {% endfor %}
-        </select>
-      </div>
-    </div>
-    {% endif %}
-
-    <div>
-      <ul class="errorlist">
-        {% for error in errors.subject %}
-          <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-      <div>
-        <label for="subject">Subject:</label>
-        <input type="text" maxlength="200" name="subject"
-          value="{{ post.subject }}" />
-      </div>
-    </div>
-
-    <div>
-      <ul class="errorlist">
-        {% for error in errors.post %}
-          <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-      <div>
-        <label for="post">Post:</label>
-        <textarea name="post">{{ post.post }}</textarea>
-      </div>
-    </div>
-
-    <input type="hidden" name="id" value="{{ post.id }}" />
-    <input type="hidden" name="thread" value="{{ post.thread.id }}" />
-
-    <div class="form-row">
-      <input type="submit" value="Create Post" />
-    </div>
-
+    {{ form.as_ul }}
+    <input type="hidden" name="id" value="{{ post.id}}" />
+    <input type="submit" value="Update" />
   </form>
 
 {% endblock %}

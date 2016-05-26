@@ -27,7 +27,7 @@
   <a class="action-link" href="{% url 'coop:thread_new' forum.url_name %}">Create a new thread</a>
 
   {% if forum.threads.count %}
-    <table>
+    <table class="default-table">
 
       <thead>
         <tr>
@@ -58,13 +58,13 @@
           <td class='center'>{{ thread.posts.count }}</td>
           <td class='center'>
             {% if thread.posts.last %}
-              <div class='date'>{{ thread.posts.last.datetime_created|date:'N j, Y, P' }}</div>
+              <div class='date'>{{ thread.posts.last.datetime_created|date:'N j, Y, P' }},</div>
               <div class='poster'>
               {% if thread.posts.last.creator %}
-                by {{ thread.posts.last.creator.first_name }}
+                {{ thread.posts.last.creator.first_name }}
                 {{thread.posts.last.creator.last_name }}
               {% else %}
-                by the system
+                the system
               {% endif %}
             {% endif %}
           </td>
