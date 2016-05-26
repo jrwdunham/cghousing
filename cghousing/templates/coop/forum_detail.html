@@ -24,7 +24,10 @@
 
   <p>{{ forum.description }}</p>
 
-  <a class="action-link" href="{% url 'coop:thread_new' forum.url_name %}">Create a new thread</a>
+  <a class="action-link"
+     href="{% url 'coop:thread_new' forum.url_name %}"
+     title="Click to ceate a new thread in this forum."
+    ><i class="fa fa-fw fa-plus"></i>New</a>
 
   {% if forum.threads.count %}
     <table class="default-table">
