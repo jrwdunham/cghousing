@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% load coop_extras %}
+
+{% block body_class %}class="file"{% endblock %}
+
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:files' %}" title="View all files">Files</a>
+                &gt;
+                {{ file.name }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+  <h1><i class="fa fa-{{ icon }}"></i>{{ file.name }}</h1>
+
+  {% if file.description %}
+  <p>{{ file.description }}</p>
+  {% endif %}
+
+  {% if file.public %}
+  <p class="error"><i class="fa fa-unlock"></i>&nbsp;This file is public. This
+    means anyone can access it.</p>
+  {% else %}
+  <p class="ok"><i class="fa fa-lock"></i>&nbsp;This file is not public. Only
+    logged in members can access it.</p>
+  {% endif %}
+
+  <p>
+    <a title="Display this file in the page." class="view-file"
+      href="javascript:void(0)">View</a>
+    &nbsp;
+    &nbsp;
+    <a title="Edit the details of this file."
+       href="{% url 'coop:file_edit' file.id %}"
+       ><i class="fa fa-pencil"></i>&nbsp;Edit</a>
+  </p>
+
+  <div class="file-displayer-container"></div>
+
+  <table class="file-table">
+
+    <tr>
+      <td class="label-cell">Name</td>
+      <td>{{ file.name }}</td>
+    </tr>
+
+    <tr>
+      <td class="label-cell">URL</td>
+      <td><a href="{% url 'coop:file_data' path %}">{% url 'coop:file_data' path %}</a></td>
+    </tr>
+
+    <tr>
+      <td class="label-cell">Type</td>
+      <td><i class="fa fa-{{ icon}}"></i>&nbsp;{{ file.type | mime2human }}</td>
+    </tr>
+
+    <tr>
+      <td class="label-cell">Size</td>
+      <td>{{ file.size | filesizeformat }}</td>
+    </tr>
+
+  </table>
+
+  <script type="text/javascript">
+    // Logic for dynamically embedding/showing/hiding file data.
+    var url = "{% url 'coop:file_data' path %}";
+    var fileType = "{{ file.type }}";
+    if (fileType.indexOf('pdf') !== -1) {
+      var object_html = '<object ' +
+        'type="application/pdf" ' +
+        'width="100%" height="800px" ' +
+        'data="{% url 'coop:file_data' path %}" ' +
+        '>alt: <a href="{% url 'coop:file_data' path %}" ' +
+        '>{% url 'coop:file_data' path %}</a> ' +
+      '</object>';
+    } else if (fileType.indexOf('image') !== -1) {
+      var object_html = '<img class="file-data-img" src="{% url 'coop:file_data' path %}" />';
+    } else if ((fileType.indexOf('audio') !== -1) || (fileType === 'application/ogg')) {
+      var object_html = '<audio controls> ' +
+        '<source src="{% url 'coop:file_data' path %}" type="{{ file.type }}"> ' +
+        'Your browser does not support the audio element. ' +
+      '</audio>';
+    } else {
+      var object_html = '<a href="{% url 'coop:file_data' path %}">{{ file.name }}</a>';
+    }
+    $('a.view-file').click(function() {
+      var $container = $('div.file-displayer-container').first();
+      if ($container.html()) {
+        if ($container.is(':visible')) {
+          $('a.view-file').text('View').attr('title', 'Display this file in the page.');
+          $container.slideUp();
+        } else {
+          $('a.view-file').text('Hide').attr('title', 'Hide the in-page file display.');
+          $container.slideDown();
+        }
+      } else {
+        $('a.view-file').text('Hide').attr('title', 'Hide the in-page file display.');
+        $container.html(object_html);
+      }
+    });
+  </script>
+
+
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+

@@ -70,12 +70,14 @@
                                         </div>
                                     </div>
                                     <div class="post-meta-right">
+                                        {% if user.is_superuser or user.id == post.creator.id %}
                                         <a href="{% url 'coop:post_edit' pk=post.id %}"
                                             class="post-action-link"
                                             title="Edit this post">
                                             <i class="fa fa-fw fa-pencil"></i>
                                             <span>Edit</span>
                                         </a>
+                                        {% endif %}
                                         <a class="jump-to-reply post-action-link"
                                             data-post-id="{{ post.id }}"
                                             data-post-subject="{{ post.subject }}"
@@ -89,7 +91,7 @@
                             </tr>
 
                             <tr>
-                                <td class="post-post">{{ post.post|markdown }}</td>
+                                <td class="post-post markdown">{{ post.post | markdown }}</td>
                             </tr>
                         </tbody>
                     </table>

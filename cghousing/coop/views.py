@@ -1,4 +1,6 @@
+import os
 import string
+import magic
 import json
 import pprint
 from django.shortcuts import render, get_object_or_404
@@ -14,16 +16,26 @@ from django.contrib import messages
 from django.forms import Form, ModelForm, CharField, Textarea, ModelChoiceField, ValidationError
 from django.forms.widgets import HiddenInput
 from django.db.models import Q
-from coop.models import Forum, Thread, Post, ApplicationSettings, Page
+from coop.models import Forum, Thread, Post, ApplicationSettings, Page, File, UPLOADS_DIR
 
 # TODO:
 #
-# - 403 Unauthorized response: needs something visual (just a blank screen
-#   right now)
+# - PostForm should not display reply_to when new post is first post in thread.
+# - reply_to should not be optional in non-initial post.
 
 ################################################################################
 # Global Template Context Stuff
 ################################################################################
+
+# These are the pages that will be listed in the "Members only" section of the
+# left sidebar.
+# TODO: this information should be specified in the application settings model.
+DYNAMIC_PAGES = (
+    ('minutes', 'Minutes'),
+    ('forums', 'Forums'),
+    ('pages', 'Pages'),
+    ('files', 'Files'),
+)
 
 def get_global_context():
     """Return a context dict that all templates need. Includes the active
@@ -41,11 +53,7 @@ def get_global_context():
     pages = dict((p.id, p) for p in pages)
     context = {
         'app_settings': app_settings,
-        'coop_dynamic_pages': (
-            ('minutes', 'Minutes'),
-            ('forums', 'Forums'),
-            ('pages', 'Pages'),
-        )
+        'coop_dynamic_pages': DYNAMIC_PAGES
     }
     for id_ in public_page_ids:
         page = pages.get(id_)
@@ -182,10 +190,8 @@ def forum_save(request):
     form = ForumForm(request.POST)
     if form.is_valid():
         new_forum = Forum(**form.cleaned_data)
+        new_forum.creator = new_forum.modifier = request.user
         new_forum.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
         return HttpResponseRedirect(reverse('coop:forum',
             kwargs={'pk': new_forum.id}))
     else:
@@ -255,6 +261,7 @@ def thread_save_view(request, url_name):
     form = ThreadForm(forum, request.POST)
     if form.is_valid():
         new_thread = Thread(**form.cleaned_data)
+        new_thread.creator = new_thread.modifier = request.user
         new_thread.save()
         return HttpResponseRedirect(reverse('coop:thread',
             kwargs={'url_name': forum.url_name, 'pk': new_thread.id}))
@@ -342,6 +349,163 @@ def post_edit_view(request, pk):
         return render(request, 'coop/post_edit.html', context)
 
 
+# File-related Views, etc.
+################################################################################
+
+@login_required
+def files_view(request):
+    """Display the collection of all files at /files.
+
+    """
+
+    files = File.objects.order_by('name')
+    for file in files:
+        file.path = os.path.split(str(file.upload))[1]
+    context = {'files': files, 'request': request}
+    context.update(get_global_context())
+    return render(request, 'coop/file_list.html', context)
+
+
+@login_required
+def file_view(request, pk):
+    """Display a file, given its primary key `pk`, e.g., /file/37/.
+
+    """
+
+    file = File.objects.get(pk=pk)
+    context = {
+        'file': file,
+        'icon': FILE_FA_ICONS.get(file.type, 'file-o'),
+        'path': os.path.split(str(file.upload))[1]
+    }
+    context.update(get_global_context())
+    return render(request, 'coop/file_detail.html', context)
+
+
+@login_required
+def file_by_path_view(request, path):
+    """Display a file, given its path, i.e., its name with spaces replaced by
+    underscores.
+
+    """
+
+    full_path = os.path.join(UPLOADS_DIR, path)
+    file = File.objects.filter(upload=full_path).first()
+    context = {
+        'file': file,
+        'icon': FILE_FA_ICONS.get(file.type, 'file-o'),
+        'path': path
+    }
+    context.update(get_global_context())
+    return render(request, 'coop/file_detail.html', context)
+
+
+def file_data_view(request, path):
+    """Return the file data, i.e., serve the file. The `path` argument must be
+    the value of file.upload minus the 'uploads' directory prefix. This is the
+    name of the file with whitespace replaced by underscores.
+
+    TODO: is this inefficient? Does it load the entire file into memory and/or
+    should these files be served via Apache/Nginx instead of Django/Python?
+
+    Note: add the following line in order to force a download/save-as of the
+    file::
+
+        >>> response['Content-Disposition'] = 'attachment; filename="%s.pdf"' % (file.name)
+
+    """
+
+    try:
+        path = os.path.join(UPLOADS_DIR, path)
+        file = File.objects.filter(upload=path).first()
+        if (not file.public) and (not request.user.is_authenticated()):
+            return HttpResponseForbidden('Only co-op members can access that file')
+        if os.path.isfile(path) and file:
+            file_data = open(path, 'rb')
+            response = HttpResponse(content=file_data)
+            response['Content-Type']= file.type
+            response['Content-Disposition'] = 'filename="%s.pdf"' % file.name
+            return response
+        else:
+            raise Http404("There is no file at %s" % path)
+    except File.DoesNotExist:
+        raise Http404("There is no file at %s" % path)
+
+
+@login_required
+def file_new_view(request):
+    """Display the form for uploading a new file at /file.
+
+    """
+
+    form = FileForm()
+    context = {'form': form}
+    context.update(get_global_context())
+    return render(request, 'coop/file_new.html', context)
+
+
+@login_required
+def file_edit_view(request, pk):
+    """Display the form for editing an existing file.
+
+    """
+
+    try:
+        file = File.objects.get(pk=pk)
+    except File.DoesNotExist:
+        raise Http404("There is no file with id %s" % pk)
+    else:
+        if (not request.user.is_superuser) and file.creator != request.user:
+            return HttpResponseForbidden('You are not authorized to edit this'
+                ' file')
+        form = FileEditForm(instance=file)
+        icon = FILE_FA_ICONS.get(file.type, 'file-o')
+        file.path = os.path.split(str(file.upload))[1]
+        context = {'form': form, 'file': file, 'icon': icon}
+        context.update(get_global_context())
+        return render(request, 'coop/file_edit.html', context)
+
+
+@login_required
+@require_POST
+def file_save_view(request):
+    """Handle a POST request to create a new file, i.e., upload it, or edit an
+    existing one.
+
+    """
+
+    file_id = request.POST.get('id')
+    if file_id:
+        file = File.objects.get(pk=file_id)
+        form = FileEditForm(instance=file, data=request.POST)
+    else:
+        form = FileForm(request.POST, request.FILES)
+    if form.is_valid():
+        if file_id:
+            updated_file = form.save(commit=False)
+            updated_file.modifier = request.user
+            updated_file.save()
+            return HttpResponseRedirect(reverse('coop:file',
+                kwargs={'pk': updated_file.id}))
+        else:
+            new_file = File(**form.cleaned_data)
+            new_file.creator = new_file.modifier = request.user
+            new_file.save()
+            return HttpResponseRedirect(reverse('coop:file',
+                kwargs={'pk': new_file.id}))
+    else:
+        if file_id:
+            icon = FILE_FA_ICONS.get(file.type, 'file-o')
+            file.path = os.path.split(str(file.upload))[1]
+            context = {'form': form, 'file': file, 'icon': icon}
+            context.update(get_global_context())
+            return render(request, 'coop/file_edit.html', context)
+        context = {'form': form}
+        context.update(get_global_context())
+        return render(request, 'coop/file_new.html', context)
+
+
+
 # Page-related Views, etc.
 ################################################################################
 
@@ -359,6 +523,76 @@ def pages_view(request):
         }
     context.update(get_global_context())
     return render(request, 'coop/page_list.html', context)
+
+
+@login_required
+def page_new_view(request):
+    """Display the form for creating a new page at /page.
+
+    """
+
+    form = PageForm()
+    context = {'form': form}
+    context.update(get_global_context())
+    return render(request, 'coop/page_new.html', context)
+
+
+@login_required
+def page_edit_view(request, pk):
+    """Display the form for editing an existing page.
+
+    """
+
+    try:
+        page = Page.objects.get(pk=pk)
+    except Page.DoesNotExist:
+        raise Http404("There is no page with id %s" % pk)
+    else:
+        if ((not request.user.is_superuser) and (not page.editable) and
+            page.creator != request.user):
+            return HttpResponseForbidden('You are not authorized to edit this'
+                ' page')
+        form = PageForm(instance=page)
+        context = {'form': form, 'page': page}
+        context.update(get_global_context())
+        return render(request, 'coop/page_edit.html', context)
+
+
+@login_required
+@require_POST
+def page_save_view(request):
+    """Handle a POST request to create a new page or update an existing one.
+
+    """
+
+    page_id = request.POST.get('id')
+    if page_id:
+        page = Page.objects.get(pk=page_id)
+        form = PageForm(instance=page, data=request.POST)
+    else:
+        form = PageForm(request.POST)
+    if form.is_valid():
+        if page_id:
+            updated_page = form.save(commit=False)
+            updated_page.url_title = form.cleaned_data['url_title']
+            updated_page.modifier = request.user
+            updated_page.save()
+            return HttpResponseRedirect(reverse('coop:page',
+                kwargs={'pk': updated_page.id}))
+        else:
+            new_page = Page(**form.cleaned_data)
+            new_page.creator = new_page.modifier = request.user
+            new_page.save()
+            return HttpResponseRedirect(reverse('coop:page',
+                kwargs={'pk': new_page.id}))
+    else:
+        if page_id:
+            context = {'form': form, 'page': page}
+            context.update(get_global_context())
+            return render(request, 'coop/page_edit.html', context)
+        context = {'form': form}
+        context.update(get_global_context())
+        return render(request, 'coop/page_new.html', context)
 
 
 def page_view(request, pk):
@@ -522,6 +756,109 @@ class PostForm(ModelForm):
         if (not posts) or (self.instance == posts[0]):
             self.fields["reply_to"].widget = HiddenInput()
 
+ALLOWED_FILE_TYPES = (
+    'application/pdf',
+    'image/gif',
+    'image/png',
+    'image/jpeg',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/msword',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-powerpointtd',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'audio/vorbis',
+    'application/ogg',
+    'audio/wav',
+    'audio/x-wav',
+    'audio/mpeg'
+)
+
+FILE_FA_ICONS = {
+    'application/pdf': 'file-pdf-o',
+    'image/gif': 'file-image-o',
+    'image/png': 'file-image-o',
+    'image/jpeg': 'file-image-o',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        'file-word-o',
+    'application/msword': 'file-word-o',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+        'file-excel-o',
+    'application/ms-excel': 'file-excel-o',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+        'file-powerpoint-o',
+    'application/ms-powerpointtd': 'file-powerpoint-o',
+    'audio/vorbis': 'file-audio-o',
+    'application/ogg': 'file-audio-o',
+    'audio/wav': 'file-audio-o',
+    'audio/x-wav': 'file-audio-o',
+    'audio/mpeg': 'file-audio-o',
+}
+
+class FileForm(ModelForm):
+    """Form for creating new files.
+
+    """
+
+    class Meta:
+        model = File
+        fields = ['upload', 'description', 'public']
+
+    def clean(self):
+        cleaned_data = super(FileForm, self).clean()
+        upload = cleaned_data.get('upload', '')
+        if not upload:
+            raise ValidationError('Please choose a file for upload',
+                code='invalid')
+        try:
+            type_ = magic.Magic(mime=True).from_file(
+                upload.temporary_file_path())
+        except AttributeError:
+            type_ = magic.Magic(mime=True).from_buffer(upload.read())
+        if type_ not in ALLOWED_FILE_TYPES:
+            raise ValidationError('Files of type %(type)s cannot be uploaded',
+                params={'type': type_}, code='invalid')
+        if upload.size > 20000000:
+            raise ValidationError('That file is too big. 20 MB is the limit',
+                code='invalid')
+        cleaned_data['type'] = type_
+        cleaned_data['size'] = upload.size
+        cleaned_data['name'] = upload.name
+        return cleaned_data
+
+
+class FileEditForm(ModelForm):
+    """Form for editing existing files.
+
+    """
+
+    class Meta:
+        model = File
+        fields = ['description', 'public']
+
+
+class PageForm(ModelForm):
+    """Form for creating new pages.
+
+    """
+
+    class Meta:
+        model = Page
+        fields = ['title', 'content', 'public', 'editable']
+
+    def clean(self):
+        cleaned_data = super(PageForm, self).clean()
+        title = cleaned_data.get('title', '')
+        url_title = name2url(title)
+        existing_page = Page.objects.filter(url_title=url_title).first()
+        if (existing_page and
+            getattr(self.instance, 'id', None) != existing_page.id):
+            raise ValidationError('The title %(title)s is too similar to an'
+            ' existing one', params={'title': cleaned_data['title']},
+            code='invalid')
+        cleaned_data['url_title'] = url_title
+        return cleaned_data
+
 
 ################################################################################
 # Helpers
@@ -576,6 +913,6 @@ def name2url(name):
 
     valid_chars = "- %s%s" % (string.ascii_letters, string.digits)
     url = ''.join(c for c in name if c in valid_chars)
-    url = url.replace(' ','-').lower()
+    url = url.replace(' ', '-').lower()
     return url
 

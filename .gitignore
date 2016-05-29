@@ -63,6 +63,9 @@ target/
 cghousing/polls/
 cghousing/coop/fixtures/private_fixtures/
 cghousing/coop/fixtures/fixtures_real.json
+cghousing/coop/static/coop/css/vendor/
+cghousing/coop/static/coop/js/vendor/
+cghousing/uploads/
 README_PRIVATE.rst
 
 .python-version

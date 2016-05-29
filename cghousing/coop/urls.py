@@ -9,10 +9,23 @@ urlpatterns = patterns('',
 
     # Pages
     url(r'^pages/$', views.pages_view, name='pages'),
+    url(r'^page/$', views.page_new_view, name='page_new'),
+    url(r'^page/save/$', views.page_save_view, name='page_save'),
     url(r'^page/(?P<pk>\d+)/$', views.page_view, name='page'),
     url(r'^page/(?P<url_title>[-\w\d]+)/$', views.page_view_by_url_title,
         name='page_by_url_title'),
+    url(r'^page/(?P<pk>\d+)/edit/$', views.page_edit_view, name='page_edit'),
     url(r'^minutes/$', views.minutes_view, name='minutes'),
+
+    # Files
+    url(r'^files/$', views.files_view, name='files'),
+    url(r'^file/(?P<pk>\d+)/$', views.file_view, name='file'),
+    url(r'^file/(?P<path>[^ /]+)/$', views.file_by_path_view, name='file_by_path'),
+    url(r'^file/$', views.file_new_view, name='file_new'),
+    url(r'^file/save$', views.file_save_view, name='file_save'),
+    url(r'^file/data/(?P<path>[^ ]+)/$$', views.file_data_view,
+        name='file_data'),
+    url(r'^file/(?P<pk>\d+)/edit/$', views.file_edit_view, name='file_edit'),
 
     # Forums
     url(r'^forums/$', views.forums_view, name='forums'),

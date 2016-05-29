@@ -18,31 +18,44 @@
 {% block content %}
   <h1>Pages</h1>
 
-  <p>Welcome to our members-only pages page. This page lists all of the pages
-  that have been created on this web site. Pages are private by default, which
-  means that only co-op members can see them. If you make a page public, then
-  anybody will be able to see it.</p>
+  <p>Here are listed all of the pages that have been created on this web site.
+  Pages are private by default, which means that only co-op members can see
+  them. If you make a page public, then anybody will be able to see it.</p>
 
-  <a class="action-link" href="{% url 'coop:forum_new'%}">Create a new page TODO</a>
+  <a class="action-link"
+     href="{% url 'coop:page_new'%}"
+     title="Create a new page"
+     ><i class="fa fa-fw fa-plus"></i>New</a>
 
   {% if pages %}
   <table class="pages-table">
     <thead>
       <tr>
         <th class="title">Title</th>
-        <th class="threads">Preview</th>
-        <th class="last-post">Public</th>
+        <th class="preview">Preview</th>
+        <th class="access">Access</th>
+        <th class="editable">Editable</th>
       </tr>
     </thead>
     <tbody>
     {% for page in pages %}
       <tr class="{% cycle 'even-row' 'odd-row' %}">
-        <td>{{ page.title }}</td>
-        <td>{{ page.content | truncatechars:100 }}</td>
+        <td><a href="{% url 'coop:page_by_url_title' page.url_title %}"
+               >{{ page.title }}</a></td>
+        <td>{{ page.content | truncatechars:40 }}</td>
         {% if page.public %}
-          <td><i class="ok fa fa-fw fa-check-circle"></i></td>
+          <td title="This page is public and can be viewed by anybody."
+              ><i class="error fa fa-fw fa-unlock"></i></td>
         {% else %}
-          <td><i class="error fa fa-fw fa-times-circle"></i></td>
+          <td title="This page is not public. It can only be viewed by members."
+              ><i class="ok fa fa-fw fa-lock"></i></td>
+        {% endif %}
+        {% if page.editable %}
+          <td title="This page can be edited by any co-op member."
+              ><i class="fa fa-fw fa-unlock"></i></td>
+        {% else %}
+          <td title="This page can only be edited by the user who created it and administrators."
+              ><i class="fa fa-fw fa-lock"></i></td>
         {% endif %}
       </tr>
     {% endfor %}

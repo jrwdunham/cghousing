@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% load coop_extras %}
+{% load markdown_deux_tags %}
+
+{% block body_class %}class="files"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                Files
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <h1>Files</h1>
+
+  <p>This page lists all of the files that have been uploaded to the web site.
+  Files are private by default, which means that only co-op members can see
+  them or download them. If you make a file public, then anybody will be able
+  to see it or download it.</p>
+
+  <a class="action-link" href="{% url 'coop:file_new'%}">
+    <i class="fa fa-fw fa-upload"></i>Upload a file</a>
+
+  {% if files %}
+  <table class="files-table">
+    <thead>
+      <tr>
+        <th class="name">Name</th>
+        <th class="type">Type</th>
+        <th class="file-size">Size</th>
+        <th class="access">Access</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for file in files %}
+      <tr class="{% cycle 'even-row' 'odd-row' %}">
+        <td><a href="{% url 'coop:file_by_path' file.path %}">{{ file.name }}</a></td>
+        <td><i class="fa fa-{{ file.type | mime2awesome }}"></i>&nbsp;{{ file.type | mime2human }}</td>
+        <td class="file-size">{{ file.size | filesizeformat }}</td>
+        {% if file.public %}
+          <td title="Public file; anyone can access it.">
+            <i class="error fa fa-fw fa-unlock"></i></td>
+        {% else %}
+          <td title="Private file; only members can access it.">
+            <i class="ok fa fa-fw fa-lock"></i></td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>There are no files.</p>
+  {% endif %}
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+
+

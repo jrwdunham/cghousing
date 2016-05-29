@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block body_class %}class="file_new"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:files' %}">Files</a>
+                &gt;
+                <a href="{% url 'coop:file_by_path' file.path %}">{{ file.path }}</a>
+                &gt;
+                edit
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <h1>Edit <i class="fa fa-{{ icon }}"></i>&nbsp;{{ file.name }}</h1>
+
+  {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+  <form action="{% url 'coop:file_save' %}"
+    method="post"
+    class="default-form">
+    {% csrf_token %}
+    {{ form.as_ul }}
+    <input type="hidden" name="id" value="{{ file.id }}" />
+    <input type="submit" value="Update" />
+  </form>
+
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+
+

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block body_class %}class="page_new"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:pages' %}">Pages</a>
+                &gt;
+                <a href="{% url 'coop:page_by_url_title' page.url_title %}"
+                  >{{ page.title }}</a>
+                &gt;
+                edit
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <h1>Edit Page {{ page.title }}</h1>
+
+  {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+  <form action="{% url 'coop:page_save' %}"
+    method="post"
+    class="default-form">
+    {% csrf_token %}
+    <ul>{{ form.as_ul }}</ul>
+    <input type="hidden" name="id" value="{{ page.id }}" />
+    <input type="submit" value="Save" />
+  </form>
+
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+
+
+

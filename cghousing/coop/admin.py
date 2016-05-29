@@ -577,7 +577,9 @@ class MeetingMinutesAdmin(MyModelAdmin):
 
 
 admin.site.register(Person, PersonAdmin)
-admin.site.register(MeetingMinutes, MeetingMinutesAdmin)
+# TODO: should minutes be a model any more now that we're just using pages and
+# files to encode minutes.
+# admin.site.register(MeetingMinutes, MeetingMinutesAdmin)
 admin.site.register(ApplicationSettings, ApplicationSettingsAdmin)
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(Committee, CommitteeAdmin)

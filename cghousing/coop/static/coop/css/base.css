@@ -170,7 +170,8 @@ th
   font-size: 90%;
 }
 
-.forum table
+.forum table,
+.files-table
 {
   table-layout: fixed;
   width: 100%;
@@ -339,6 +340,14 @@ p
   line-height: 125%;
 }
 
+@media screen and (max-width: 1330px)
+{
+  .files-table tr th.name
+  {
+    width: initial;
+  }
+}
+
 @media screen and (max-width: 770px)
 {
   img#picture { display: none; }
@@ -349,6 +358,28 @@ p
     width: 100%;
   }
 
+  ul.pages-menu,
+  ul.members-only-menu,
+  ul.administrators-only-menu
+  {
+    display: none;
+  }
+
+  div.module h2.pages-header
+  {
+    display: block;
+  }
+
+}
+
+.header-button
+{
+  cursor: pointer;
+}
+
+h2.pages-header
+{
+  display: none;
 }
 
 input[type=text],
@@ -647,5 +678,87 @@ tr.even-row
 table.default-table td
 {
   text-align: left;
+}
+
+table.default-table td,
+table.default-table th
+{
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.files-table td,
+table.files-table th
+{
+  padding: 0.25em 0.5em;
+  text-overflow: clip;
+  overflow: hidden;
+}
+
+h1
+{
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.files-table th.name
+{
+  width: 65%;
+}
+
+th.file-size,
+td.file-size,
+td.label-cell
+{
+  text-align: right;
+}
+
+td.label-cell
+{
+  background-color: #ccc;
+}
+
+table.file-table td
+{
+  padding: 0.5em;
+}
+
+img.file-data-img
+{
+  max-width: 100%;
+}
+
+.markdown ul > li
+{
+  list-style-type: disc;
+  list-style-position: inside;
+  text-indent: -1em;
+  padding-left: 1em;
+}
+
+.markdown ol > li
+{
+  list-style-type: decimal;
+  list-style-position: inside;
+  text-indent: -1em;
+  padding-left: 1em;
+}
+
+.markdown em
+{
+  font-style: italic;
+}
+
+.markdown img
+{
+  max-width: 100%;
+}
+
+span.helptext
+{
+  color: gray;
+  display: inline-block;
+  vertical-align: top;
+  font-size: 75%;
 }
 

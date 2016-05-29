@@ -8,12 +8,20 @@
 
 {% block content %}
 
-<div id="content-main">
+{% if user.is_authenticated %}
+    {% if page.editable or user.is_superuser or user.id == page.creator.id %}
+    <p>
+        <a href="{% url 'coop:page_edit' page.id %}">
+            <i class="fa fa-pencil"></i>&nbsp;Edit</a></p>
+    {% endif %}
+{% endif %}
+
+<div id="content-main" class="user-generated-page markdown">
 
   {% if page.trusted %}
-    {{ page.content|markdown:'trusted' }}
+    {{ page.content | markdown:'trusted' }}
   {% else %}
-    {{ page.content|markdown }}
+    {{ page.content | markdown }}
   {% endif %}
 
 </div>

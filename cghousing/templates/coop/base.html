@@ -6,12 +6,21 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static "coop/css/reset.css" %}" />
+
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="{% static "coop/css/vendor/font-awesome.min.css" %}"> -->
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
+    <!-- LOCAL BOOTSTRATP NOT WORKING TODO -->
+    <!-- <link rel="stylesheet" href="{% static "coop/css/vendor/bootstrap.min.css" %}" /> -->
+
     <link rel="stylesheet" href="{% static "coop/css/base.css" %}" />
     <link rel='shortcut icon' href="{% static "coop/images/logo-196.png" %}"
         type='image/x-icon' />
+
     <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <!-- <script src="{% static "coop/js/vendor/jquery-1.11.1.min.js" %}"></script> -->
+
     <title>{% block title %}{{ app_settings.coop_name }}{% endblock %}</title>
 </head>
 
@@ -59,9 +68,10 @@
 
                 {% block leftbar %}
 
-                <img id="picture" src="{% static "coop/images/coop-214.jpg" %}" />
+                <img id="picture" src="{% static "coop/images/coop-500.jpg" %}" />
                 <div class="module">
-                    <ul>
+                    <h2 class="pages-header header-button">Pages</h2>
+                    <ul class="pages-menu">
                     {% for url_title, title in coop_static_pages %}
                         {% if url_title == current_page %}
                         <li class='current-page'>{{ title }}</li>
@@ -74,25 +84,25 @@
 
                 {% if user.is_authenticated %}
                 <div class="module">
-                    <h2>Members only</h2>
-                        <ul>
-                        {% for url_, title in coop_dynamic_pages %}
-                            {% if url_ == current_page %}
-                            <li class='current-page'>{{ title }}</li>
-                            {% else %}
-                            <li><a href="{% url "coop:"|add:url_ %}">{{ title }}</a></li>
-                            {% endif %}
-                        {% endfor %}
-                        </ul>
+                    <h2 class="members-only-header header-button">Members only</h2>
+                    <ul class="members-only-menu">
+                    {% for url_, title in coop_dynamic_pages %}
+                        {% if url_ == current_page %}
+                        <li class='current-page'>{{ title }}</li>
+                        {% else %}
+                        <li><a href="{% url "coop:"|add:url_ %}">{{ title }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
                 </div>
                 {% endif %}
 
                 {% if user.is_staff %}
                 <div class="module">
-                    <h2>Administrators</h2>
-                        <ul>
-                            <li><a href="{% url "admin:index" %}">Administrator Site</a></li>
-                        </ul>
+                    <h2 class="administrators-only-header header-button">Administrators</h2>
+                    <ul class="administrators-only-menu">
+                        <li><a href="{% url "admin:index" %}">Administrator Site</a></li>
+                    </ul>
                 </div>
                 {% endif %}
 
@@ -129,6 +139,19 @@
             // When the page has finished loading,
             // autofocus on the username field
             $('input[type=text]').first().focus();
+
+            $('h2.pages-header').click(function() {
+                $('ul.pages-menu').slideToggle();
+            });
+
+            $('h2.members-only-header').click(function() {
+                $('ul.members-only-menu').slideToggle();
+            });
+
+            $('h2.administrators-only-header').click(function() {
+                $('ul.administrators-only-menu').slideToggle();
+            });
+
         });
     </script>
 

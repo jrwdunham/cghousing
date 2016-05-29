@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 
 """
 
+UPLOADS_DIR = 'uploads'
 
 class Base(models.Model):
     """Abstract base class for CG models. Implements the functionality
@@ -350,17 +351,62 @@ class Page(Base):
 
     # Content of the page in Markdown (or filtered HTML)
     content = models.TextField(
-        blank=True
+        blank=True,
+        help_text=("Use <a"
+            " href='https://daringfireball.net/projects/markdown/'>Markdown</a>"
+            " to add formatting, links and images to your page.")
     )
 
     # If true, then you don't need a password to view this page.
     public = models.BooleanField(
-        default=False
+        default=False,
+        help_text=("If checked, then everybody can view this page. If"
+            " unchecked, only members can view it.")
+    )
+
+    # If true, then all members can edit this page. If false, then only the
+    # page's creator and superusers can edit this page.
+    editable = models.BooleanField(
+        default=False,
+        help_text=("If checked, then all members can edit this page. If"
+            " unchecked, only its creator can edit it.")
     )
 
     # If true, then you can include raw HTML in the content of this page.
     # WARN: only admins should be allowed to change this to True.
-    trusted = models.BooleanField(
+    trusted = models.BooleanField(default=False)
+
+
+class File(Base):
+    """A model for files uploaded to the web site.
+
+    """
+
+    def __unicode__(self):
+        return u'File "%s"' % self.name
+
+    name = models.CharField(
+        max_length=200
+    )
+
+    description = models.TextField(blank=True)
+
+    # Type of the file.
+    type = models.CharField(
+        max_length=200,
+        default=''
+    )
+
+    # Size of the file in bytes.
+    size = models.IntegerField(
+        default=0
+    )
+
+    # Field for the file data. Will store the url.
+    upload = models.FileField(upload_to='%s/' % UPLOADS_DIR)
+
+    # If true, then you don't need to be logged in to view this file.
+    public = models.BooleanField(
         default=False
     )
 

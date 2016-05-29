@@ -2,13 +2,13 @@
 
 {% load humanize %}
 
-{% block body_class %}class="forum_new"{% endblock %}
+{% block body_class %}class="file_new"{% endblock %}
 
 {% block breadcrumbs %}
     <div class="row">
         <div class="col-sm-12">
             <div class="breadcrumbs">
-                <a href="{% url 'coop:forums' %}">Forums</a>
+                <a href="{% url 'coop:files' %}">Files</a>
                 &gt;
                 new
             </div>
@@ -17,18 +17,20 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Create a new Forum</h1>
+  <h1>Upload a new File</h1>
 
   {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-  <form action="{% url 'coop:forum_save' %}"
-        method="post"
-        class="default-form">
+  <form action="{% url 'coop:file_save' %}"
+    method="post"
+    class="default-form"
+    enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_ul }}
-    <input type="submit" value="Create" />
+    <input type="submit" value="Upload" />
   </form>
 
 {% endblock %}
 
 {% block rightbar %}{% endblock %}
+

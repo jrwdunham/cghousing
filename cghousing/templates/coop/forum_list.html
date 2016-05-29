@@ -22,7 +22,8 @@
   conversations and/or make your own posts.</p>
 
   {% if request.user.is_superuser %}
-    <a class="action-link" href="{% url 'coop:forum_new'%}">Create a new forum</a>
+    <a class="action-link" href="{% url 'coop:forum_new'%}"
+        ><i class="fa fa-fw fa-plus"></i>&nbsp;New</a>
   {% endif %}
 
   {% for forum_category, forum_sublist in forum_list.items %}
