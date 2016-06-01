@@ -77,7 +77,7 @@
                 <div class="module">
                     <h2 class="pages-header header-button">Pages</h2>
                     <ul class="pages-menu">
-                    {% for url_title, title in coop_static_pages %}
+                    {% for url_title, title in coop_public_pages %}
                         {% if url_title == current_page %}
                         <li class='current-page'>{{ title }}</li>
                         {% else %}
@@ -91,7 +91,7 @@
                 <div class="module">
                     <h2 class="members-only-header header-button">Members only</h2>
                     <ul class="members-only-menu">
-                    {% for url_, title in coop_dynamic_pages %}
+                    {% for url_, title in coop_members_only_pages %}
                         {% if url_ == current_page %}
                         <li class='current-page'>{{ title }}</li>
                         {% else %}

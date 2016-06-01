@@ -106,15 +106,16 @@ class ApplicationSettings(Base):
     # Public pages order: JSON array of `Page.id`s
     public_pages = models.TextField(
         default='[]',
-        help_text=(u'Ordered list of page ids for the public pages of the site: '
-          u'JSON array of integers.')
+        help_text=(u'Ordered list of page ids for the public pages of the site:'
+            u' JSON array of integers.')
     )
 
-    # Member pages order: JSON array of `Page.id`s
+    # Member pages: JSON array of 2-ary arrays of the form `[url, title]`.
     member_pages = models.TextField(
         default='[]',
-        help_text=(u'Ordered list of page ids for the members-only pages of the site: '
-          u'JSON array of integers.')
+        help_text=(u'Ordered list of members only pages. Must be a JSON array'
+            ' of arrays, where each subarray is a 2-ary array of the form `[url,'
+            ' title]`.')
     )
 
 

@@ -33,21 +33,9 @@ from coop.models import (
 # Global Template Context Stuff
 ################################################################################
 
-# These are the pages that will be listed in the "Members only" section of the
-# left sidebar.
-# TODO: this information should be specified in the application settings model.
-DYNAMIC_PAGES = (
-    ('minutes', 'Minutes'),
-    ('members', 'Members'),
-    ('committees', 'Committees'),
-    ('rules', 'Rules'),
-    ('units', 'Units'),
-    ('forums', 'Forums'),
-    ('pages', 'Pages'),
-    ('files', 'Files'),
-)
 
 LATEX_DIR = 'latex'
+
 
 def get_global_context():
     """Return a context dict that all templates need. Includes the active
@@ -56,6 +44,22 @@ def get_global_context():
     """
 
     app_settings = get_application_settings()
+    context = {
+        'app_settings': app_settings,
+        'coop_members_only_pages': get_coop_members_only_pages(app_settings),
+        'coop_public_pages': get_coop_public_pages(app_settings)
+    }
+    return context
+
+
+def get_coop_public_pages(app_settings):
+    """Return a list of 2-tuples that represent the public pages of the web
+    site. This list is based on the JSON array of page ids defined in the
+    application settings' public pages attribute.
+
+    """
+
+    public_pages = []
     try:
         public_page_ids = json.loads(app_settings.public_pages)
     except:
@@ -63,16 +67,25 @@ def get_global_context():
     pages = Page.objects.only('title', 'url_title')\
         .filter(id__in=public_page_ids)
     pages = dict((p.id, p) for p in pages)
-    context = {
-        'app_settings': app_settings,
-        'coop_dynamic_pages': DYNAMIC_PAGES
-    }
     for id_ in public_page_ids:
         page = pages.get(id_)
         if page:
-            context.setdefault('coop_static_pages', [])\
-                .append((page.url_title, page.title))
-    return context
+            public_pages.append((page.url_title, page.title))
+    return public_pages
+
+
+def get_coop_members_only_pages(app_settings):
+    """Return a list of 2-tuples that represent the members only pages of the
+    web site. This list is based on the JSON array of 2-ary arrays defined in
+    the application settings' member pages attribute.
+
+    """
+
+    members_only_pages = []
+    try:
+        return json.loads(app_settings.member_pages)
+    except:
+        return []
 
 
 def get_application_settings():
