@@ -10,7 +10,8 @@ body
 {
   width: 100%;
   background: #417690;
-  color: #ffc;
+  /*color: #ffc;*/
+  color: white;
   overflow: hidden;
 }
 
@@ -32,7 +33,7 @@ body
 
 #branding h1
 {
-  color: #f4f379;
+  /*color: #f4f379;*/
   padding: 0 10px;
   font-size: 120%;
   margin: 8px 0;
@@ -468,6 +469,7 @@ h1
   /* color: #666; */
   padding: 0 6px 0 0;
   margin: 0 0 .2em 0;
+  line-height: 1.5em;
 }
 
 h2
@@ -728,13 +730,15 @@ td.label-cell
   background-color: #ccc;
 }
 
-table.member-table
+table.member-table,
+table.unit-table
 {
   margin: 1em 0;
 }
 
 table.file-table td,
-table.member-table td
+table.member-table td,
+table.unit-table td
 {
   padding: 0.5em;
 }

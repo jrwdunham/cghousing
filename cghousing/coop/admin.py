@@ -185,6 +185,7 @@ class UnitAdmin(MyModelAdmin):
             'fields': [
                 'block_number',
                 'unit_number',
+                'page_content',
                 'notes',
                 'bedrooms',
                 'bathrooms']}),

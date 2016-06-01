@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% load markdown_deux_tags %}
+{% load humanize %}
+
+{% block body_class %}class="unit"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:units' %}">Units</a>
+                &gt;
+                #{{ unit.unit_number}}, {{ unit.block_number }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Unit #{{ unit.unit_number}}, {{ unit.block_number }}</h1>
+
+<table class="unit-table">
+
+  <tr>
+    <td class="label-cell">Block #</td>
+    <td>{{ unit.block_number }}</td>
+  </tr>
+
+  <tr>
+    <td class="label-cell">Unit #</td>
+    <td>{{ unit.unit_number }}</td>
+  </tr>
+
+  <tr>
+    <td class="label-cell"># Bedrooms</td>
+    <td>{{ unit.bedrooms }}</td>
+  </tr>
+
+  <tr>
+    <td class="label-cell"># Bathrooms</td>
+    <td>{{ unit.bathrooms }}</td>
+  </tr>
+
+</table>
+
+<div class="markdown">{{ unit.page_content | markdown }}</div>
+
+{% endblock %}
+

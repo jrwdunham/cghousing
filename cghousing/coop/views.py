@@ -22,7 +22,7 @@ from django.forms.widgets import HiddenInput
 from django.db.models import Q
 from coop.models import (
     Forum, Thread, Post, ApplicationSettings, Page, File, Person, UPLOADS_DIR,
-    BlockRepresentative, Committee, PhoneNumber)
+    BlockRepresentative, Committee, PhoneNumber, Unit)
 
 # TODO:
 #
@@ -39,6 +39,8 @@ from coop.models import (
 DYNAMIC_PAGES = (
     ('minutes', 'Minutes'),
     ('members', 'Members'),
+    ('rules', 'Rules'),
+    ('units', 'Units'),
     ('forums', 'Forums'),
     ('pages', 'Pages'),
     ('files', 'Files'),
@@ -669,6 +671,58 @@ def get_person_phone_numbers_string(person):
     return ', '.join(phone_nos)
 
 
+# Unit-related Views, etc.
+################################################################################
+
+@login_required
+def units_view(request):
+    """Display the collection of all units at /units.
+
+    """
+
+    units = Unit.objects.order_by('block_number', 'unit_number')
+    for unit in units:
+        fo = []
+        for o in unit.occupants.all():
+            if o.member:
+                url = reverse('coop:member_by_full_name',
+                    kwargs={'full_name': '%s_%s' % (o.last_name, o.first_name)})
+                fo.append('<a href="%s">%s %s</a>' % (url, o.first_name,
+                    o.last_name))
+            else:
+                fo.append('%s %s' % (o.first_name, o.last_name))
+        unit.formatted_occupants = ', '.join(fo)
+    context = {
+        'units': units,
+        'current_page': 'units',
+        'request': request
+        }
+    context.update(get_global_context())
+    return render(request, 'coop/unit_list.html', context)
+
+
+@login_required
+def unit_by_block_unit_nos_view(request, block_unit_nos):
+    """Display the page for the unit, based on its block number, followed by a
+    hyphen, followed by its unit number.
+
+    """
+
+    try:
+        block_number, unit_number = block_unit_nos.split('-')
+    except ValueError:
+        raise Http404("There is no unit matching %s" % block_unit_nos)
+    unit = Unit.objects\
+        .filter(block_number=block_number)\
+        .filter(unit_number=unit_number)\
+        .first()
+    if not unit:
+        raise Http404("There is no unit matching %s" % block_unit_nos)
+    context = {'unit': unit}
+    context.update(get_global_context())
+    return render(request, 'coop/unit_detail.html', context)
+
+
 # Page-related Views, etc.
 ################################################################################
 
@@ -812,6 +866,20 @@ def minutes_view(request):
         return display_page(request, minutes_page)
     else:
         raise Http404("There is no minutes page")
+
+
+@login_required
+def rules_view(request):
+    """Display the rules page, if there is one. "The" rules page is the one
+    whose title is "Rules". URL path is /rules/.
+
+    """
+
+    rules_page = Page.objects.filter(title='Rules').first()
+    if rules_page:
+        return display_page(request, rules_page)
+    else:
+        raise Http404("There is no rules page")
 
 
 # Phone Number-related views, etc.

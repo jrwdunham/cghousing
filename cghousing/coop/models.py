@@ -144,6 +144,13 @@ class Unit(Base):
         help_text=u'Notes about the unit.'
     )
 
+    # Content of the unit's page in Markdown (or filtered HTML)
+    page_content = models.TextField(
+        blank=True,
+        help_text=("Use <a class='markdown-help' href='javascript:void(0)'"
+            ">Markdown</a> to add formatting, links and images to your unit's"
+            " page."))
+
     bedrooms = models.IntegerField(
         default=3,
         max_length=1,

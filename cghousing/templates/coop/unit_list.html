@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% load coop_extras %}
+{% load markdown_deux_tags %}
+
+{% block body_class %}class="units"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                Units
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <h1>Units</h1>
+
+  <p>This page lists all of the units (i.e., homes) in the co-op. Units are
+  private; only co-op members can see this information.</p>
+
+  {% if units %}
+  <table class="units-table">
+    <thead>
+      <tr>
+        <th class="block_no">Block #</th>
+        <th class="unit_no">Unit #</th>
+        <th class="no_bed"># Bedrooms</th>
+        <th class="no_bath"># Bathrooms</th>
+        <th class="no_bath">Occupants</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for unit in units %}
+      <tr class="{% cycle 'even-row' 'odd-row' %}">
+        <td><a href="{% url 'coop:unit_by_block_unit_nos' unit.block_number|addstr:'-'|addstr:unit.unit_number %}"
+            >{{ unit.block_number }}</a></td>
+        <td><a href="{% url 'coop:unit_by_block_unit_nos' unit.block_number|addstr:'-'|addstr:unit.unit_number %}"
+            >{{ unit.unit_number }}</a></td>
+        <td>{{ unit.bedrooms }}</td>
+        <td>{{ unit.bathrooms }}</td>
+        <td>{{ unit.formatted_occupants | safe }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>There are no units.</p>
+  {% endif %}
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+
