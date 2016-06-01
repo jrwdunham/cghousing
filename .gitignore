@@ -66,6 +66,7 @@ cghousing/coop/fixtures/fixtures_real.json
 cghousing/coop/static/coop/css/vendor/
 cghousing/coop/static/coop/js/vendor/
 cghousing/uploads/
+cghousing/latex/
 README_PRIVATE.rst
 
 .python-version
