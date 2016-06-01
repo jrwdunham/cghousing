@@ -22,7 +22,7 @@ from django.forms.widgets import HiddenInput
 from django.db.models import Q
 from coop.models import (
     Forum, Thread, Post, ApplicationSettings, Page, File, Person, UPLOADS_DIR,
-    BlockRepresentative, Committee, PhoneNumber, Unit)
+    BlockRepresentative, Committee, PhoneNumber, Unit, Committee)
 
 # TODO:
 #
@@ -39,6 +39,7 @@ from coop.models import (
 DYNAMIC_PAGES = (
     ('minutes', 'Minutes'),
     ('members', 'Members'),
+    ('committees', 'Committees'),
     ('rules', 'Rules'),
     ('units', 'Units'),
     ('forums', 'Forums'),
@@ -671,6 +672,134 @@ def get_person_phone_numbers_string(person):
     return ', '.join(phone_nos)
 
 
+# Committee-related Views, etc.
+################################################################################
+
+@login_required
+def committees_view(request):
+    """Display the collection of all committees at /committees/.
+
+    """
+
+    committees = Committee.objects.order_by('name')
+    for c in committees:
+        c.formatted_members = get_formatted_members(c)
+    context = {
+        'committees': committees,
+        'current_page': 'committees',
+        'request': request
+        }
+    context.update(get_global_context())
+    return render(request, 'coop/committee_list.html', context)
+
+
+def get_formatted_members(committee):
+    """Return a comma-delimited string of HTML links for each non-chair member
+    in `committee`.
+
+    """
+
+    chair_id = None
+    if committee.chair:
+        chair_id = committee.chair.id
+    members = []
+    for member in committee.members.all():
+        if member.id != chair_id:
+            members.append(get_formatted_member(member))
+    return ', '.join(members)
+
+
+def get_formatted_member(member):
+    """Return member as a link to that member's page.
+
+    """
+
+    url = reverse('coop:member_by_full_name',
+        kwargs={'full_name': '%s_%s' % (member.last_name,
+            member.first_name)})
+    return '<a href="%s">%s %s</a>' % (url, member.first_name,
+            member.last_name)
+
+
+@login_required
+@require_POST
+def committee_save_view(request):
+    """Handle a POST request to update an existing committee.
+
+    """
+
+    committee_id = int(request.POST.get('id'))
+    try:
+        committee = Committee.objects.get(pk=committee_id)
+    except Committee.DoesNotExist:
+        raise Http404("There is no committee with id %s" % committee_id)
+    if ((not request.user.is_superuser) and
+        request.user.id not in [m.user.id for m in
+        committee.members.all()]):
+        return HttpResponseForbidden('You are not authorized to edit this'
+                ' committee')
+    form = CommitteeForm(instance=committee, data=request.POST)
+    if form.is_valid():
+        updated_committee = form.save(commit=False)
+        updated_committee.modifier = request.user
+        updated_committee.save()
+        form.save_m2m()
+        return HttpResponseRedirect(reverse('coop:committee_by_url_name',
+            kwargs={'url_name': committee.url_name}))
+    else:
+        context = {'form': form, 'committee': committee, 'markdown_help_text':
+                markdown_help_text}
+        context.update(get_global_context())
+        return render(request, 'coop/committee_edit.html', context)
+
+
+@login_required
+def committee_by_url_name_view(request, url_name):
+    """Display a committee, given its `url_name`, e.g., /committee/finance/.
+
+    """
+
+    try:
+        committee = Committee.objects.filter(url_name=url_name).first()
+        if not committee:
+            raise Http404("Committee %s does not exist" % url_name)
+        committee.formatted_members = get_formatted_members(committee)
+        committee.member_ids = [m.user.id for m in committee.members.all()]
+        context = {'committee': committee}
+        context.update(get_global_context())
+        return render(request, 'coop/committee_detail.html', context)
+    except Committee.DoesNotExist:
+        raise Http404("Committee %s does not exist" % url_name)
+
+
+@login_required
+def committee_edit_view(request, pk):
+    """Display a form for editing a committee. Only superusers and members of
+    the given committee can edit it.
+
+    """
+
+    try:
+        committee = Committee.objects.get(pk=pk)
+    except Committee.DoesNotExist:
+        raise Http404("There is no committee with id %s" % pk)
+    else:
+        if ((not request.user.is_superuser) and
+            request.user.id not in [m.user.id for m in
+            committee.members.all()]):
+            return HttpResponseForbidden('You are not authorized to edit this'
+                ' committee')
+        form = CommitteeForm(instance=committee)
+        members = Person.objects.filter(member=True).order_by('last_name',
+            'first_name')
+        form.fields['members'].queryset = members
+        form.fields['chair'].queryset = members
+        context = {'form': form, 'committee': committee, 'markdown_help_text':
+                markdown_help_text}
+        context.update(get_global_context())
+        return render(request, 'coop/committee_edit.html', context)
+
+
 # Unit-related Views, etc.
 ################################################################################
 
@@ -1148,6 +1277,16 @@ class PhoneNumberForm(ModelForm):
     class Meta:
         model = PhoneNumber
         fields = ['number', 'phone_type']
+
+
+class CommitteeForm(ModelForm):
+    """Form for editing committees.
+
+    """
+
+    class Meta:
+        model = Committee
+        fields = ['chair', 'members', 'description', 'page_content']
 
 
 ################################################################################

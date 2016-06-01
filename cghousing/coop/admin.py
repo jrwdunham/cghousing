@@ -317,9 +317,11 @@ class CommitteeAdmin(MyModelAdmin):
         (None, {
             'fields': [
                 'name',
+                'url_name',
                 'chair',
                 'members',
-                'description']}),
+                'description',
+                'page_content']}),
         CREATE_MODIFY_INFO
     ]
 

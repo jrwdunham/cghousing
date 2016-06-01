@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% load coop_extras %}
+{% load markdown_deux_tags %}
+
+{% block body_class %}class="committees"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                Committees
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <h1>Committees</h1>
+
+  <p>This page lists all of the committees active in the co-op. The committees
+  pages are private. Only co-op members can see this information.</p>
+
+  {% if committees %}
+  <table class="committees-table">
+    <thead>
+      <tr>
+        <th class="name">Name</th>
+        <th class="chair">Chair</th>
+        <th class="members">Members</th>
+        <th class="description">Description</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for committee in committees %}
+      <tr class="{% cycle 'even-row' 'odd-row' %}">
+        <td><a href="{% url 'coop:committee_by_url_name' committee.url_name %}"
+              >{{ committee.name }}</a></td>
+        <td>
+          {% if committee.chair %}
+            <a href="{% url 'coop:member_by_full_name' committee.chair.last_name|addstr:'_'|addstr:committee.chair.first_name %}"
+              >{{ committee.chair.first_name }} {{ committee.chair.last_name }}</a>
+          {% else %}
+            No Chair
+          {% endif %}
+        </td>
+        <td>{{ committee.formatted_members | safe }}</td>
+        <td>{{ committee.description }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>There are no committees.</p>
+  {% endif %}
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+
+

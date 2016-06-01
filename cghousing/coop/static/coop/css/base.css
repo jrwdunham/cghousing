@@ -699,6 +699,10 @@ table.default-table th
   text-overflow: ellipsis;
 }
 
+table.units-table td,
+table.units-table th,
+table.committees-table td,
+table.committees-table th,
 table.files-table td,
 table.files-table th
 {
@@ -731,14 +735,16 @@ td.label-cell
 }
 
 table.member-table,
-table.unit-table
+table.unit-table,
+table.committee-table
 {
   margin: 1em 0;
 }
 
 table.file-table td,
 table.member-table td,
-table.unit-table td
+table.unit-table td,
+table.committee-table td
 {
   padding: 0.5em;
 }

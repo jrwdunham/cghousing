@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% load coop_extras %}
+
+{% block body_class %}class="committee_new"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:committees' %}">Committees</a>
+                &gt;
+                <a href="{% url 'coop:committee_by_url_name' committee.url_name %}"
+                   >{{ committee.name }}</a>
+                &gt;
+                edit
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <h1>Edit Committee {{ committee.name }}</h1>
+
+  {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+  <form action="{% url 'coop:committee_save' %}"
+    method="post"
+    class="default-form">
+    {% csrf_token %}
+    <ul>{{ form.as_ul }}</ul>
+    <input type="hidden" name="id" value="{{ committee.id }}" />
+    <input type="submit" value="Save" />
+  </form>
+
+  <div class='markdown-help-container'>
+    <div class='markdown-help-inner-container'>
+      {{ markdown_help_text | safe }}
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+

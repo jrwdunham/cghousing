@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% load markdown_deux_tags %}
+{% load humanize %}
+{% load coop_extras %}
+
+{% block body_class %}class="committee"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:committees' %}">Committees</a>
+                &gt;
+                {{ committee.name}}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+
+<h1>{{ committee.name }} Committee</h1>
+
+{% if user.is_superuser or user.id in committee.member_ids %}
+  <a class="action-link"
+     href="{% url 'coop:committee_edit' committee.id %}"
+     title="Click to edit this committee."
+    ><i class="fa fa-fw fa-pencil"></i>Edit</a>
+{% endif %}
+
+<table class="committee-table">
+
+  <tr>
+    <td class="label-cell">Name</td>
+    <td>{{ committee.name }}</td>
+  </tr>
+
+  <tr>
+    <td class="label-cell">Chair</td>
+    <td>
+      {% if committee.chair %}
+        <a href="{% url 'coop:member_by_full_name' committee.chair.last_name|addstr:'_'|addstr:committee.chair.first_name %}"
+          >{{ committee.chair.first_name }} {{ committee.chair.last_name }}</a>
+      {% else %}
+        No Chair
+      {% endif %}
+    </td>
+  </tr>
+
+  <tr>
+    <td class="label-cell">Members</td>
+    <td>{{ committee.formatted_members | safe }}</td>
+  </tr>
+
+  {% if committee.description %}
+  <tr>
+    <td class="label-cell">Description</td>
+    <td>{{ committee.description }}</td>
+  </tr>
+  {% endif %}
+
+  {% if committee.forum %}
+  <tr>
+    <td class="label-cell">Forum</td>
+    <td><a href="{% url 'coop:forum_by_url_name' committee.forum.url_name %}"
+           >{{ committee.name }} Forum</a></td>
+  </tr>
+  {% endif %}
+
+</table>
+
+<div class="markdown">{{ committee.page_content | markdown }}</div>
+
+{% endblock %}
+
+

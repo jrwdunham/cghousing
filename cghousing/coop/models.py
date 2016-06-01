@@ -618,6 +618,15 @@ class Committee(Base):
         max_length=200
     )
 
+    # Committee name in a format that works in a URL path.
+    url_name = models.CharField(
+        unique=True,
+        max_length=200,
+        blank=True,
+        null=True,
+        default=None
+    )
+
     # A chair is many-to-one: each committee has exactly one, but an
     # overworked member can be chair of many (I think...)
     # Note: some committees are currently lacking a chair and some appear
@@ -640,6 +649,13 @@ class Committee(Base):
     description = models.TextField(
         blank=True
     )
+
+    # Content of the committee's page in Markdown (or filtered HTML)
+    page_content = models.TextField(
+        blank=True,
+        help_text=("Use <a class='markdown-help' href='javascript:void(0)'"
+            ">Markdown</a> to add formatting, links and images to this"
+            " committee's page."))
 
     # A forum just for this committee
     forum = models.OneToOneField(
