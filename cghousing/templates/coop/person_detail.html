@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% load markdown_deux_tags %}
+{% load humanize %}
+
+{% block body_class %}class="person"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:members' %}">Members</a>
+                &gt;
+                {{ member.first_name}} {{ member.last_name }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+
+<h1>{{ member.first_name}} {{ member.last_name }}</h1>
+
+{% if user.is_authenticated %}
+    {% if user.is_superuser or user.id == member.user.id %}
+    <p>
+        <a href="{% url 'coop:member_edit' member.id %}">
+            <i class="fa fa-pencil"></i>&nbsp;Edit</a></p>
+    {% endif %}
+{% endif %}
+
+<table class="member-table">
+
+  <tr>
+    <td class="label-cell">Email</td>
+    <td>{{ member.email }}</td>
+  </tr>
+
+  <tr>
+    <td class="label-cell">Phone</td>
+    <td>{{ member.phone_numbers_string }}</td>
+  </tr>
+
+  <tr>
+    <td class="label-cell">Address</td>
+    <td>{{ member.address }}</td>
+  </tr>
+
+  <tr>
+    <td class="label-cell">Committees</td>
+    <td>{{ member.formatted_committees }}</td>
+  </tr>
+
+  <tr>
+    <td class="label-cell">Children</td>
+    <td>{{ member.formatted_children }}</td>
+  </tr>
+
+</table>
+
+<div class="markdown">{{ member.page_content | markdown }}</div>
+
+
+{% endblock %}
+
+

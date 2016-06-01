@@ -33,6 +33,12 @@
     <input type="submit" value="Save" />
   </form>
 
+  <div class='markdown-help-container'>
+    <div class='markdown-help-inner-container'>
+      {{ markdown_help_text | safe }}
+    </div>
+  </div>
+
 {% endblock %}
 
 {% block rightbar %}{% endblock %}

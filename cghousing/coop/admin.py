@@ -253,6 +253,7 @@ class PersonAdmin(MyModelAdmin):
                 'unit',
                 'member',
                 'committee_excused',
+                'page_content',
                 'notes']}),
         ('Phone numbers(s)', {
             'fields': ['phone_numbers'],

@@ -177,14 +177,14 @@ class PhoneNumber(Base):
 
     number = models.CharField(max_length=12)
     phone_type = models.CharField(
+        null=True,
+        blank=True,
         max_length=10,
         choices=tuple([(pt, pt) for pt in [u'', u'cell', u'home']]))
 
 
 class Person(Base):
     """Model for people who live in the co-op: members and their family members.
-
-    TODO: connect this class to the Django auth User class
 
     https://docs.djangoproject.com/en/1.7/topics/auth/customizing/#extending-the-existing-user-model
 
@@ -200,6 +200,13 @@ class Person(Base):
     user = models.OneToOneField(
         User,
         null=True,
+    )
+
+    # Content of the page in Markdown (or filtered HTML)
+    page_content = models.TextField(
+        blank=True,
+        help_text=("Use <a class='markdown-help' href='javascript:void(0)'"
+            ">Markdown</a> to add formatting, links and images to your page.")
     )
 
     first_name = models.CharField(
@@ -276,7 +283,8 @@ class Person(Base):
     # membership_start_date
     # membership_end_date
 
-    # TODO: Figure out how to encode block-level maintenance and roof monitor roles? (see membership list)
+    # TODO: Figure out how to encode block-level maintenance and roof monitor
+    # roles? (see membership list)
 
 
 class UnitInspection(Base):
@@ -352,9 +360,8 @@ class Page(Base):
     # Content of the page in Markdown (or filtered HTML)
     content = models.TextField(
         blank=True,
-        help_text=("Use <a"
-            " href='https://daringfireball.net/projects/markdown/'>Markdown</a>"
-            " to add formatting, links and images to your page.")
+        help_text=("Use <a class='markdown-help' href='javascript:void(0)'"
+            ">Markdown</a> to add formatting, links and images to your page.")
     )
 
     # If true, then you don't need a password to view this page.
@@ -564,7 +571,10 @@ class Post(Base):
     )
 
     # The content of the post
-    post = models.TextField()
+    post = models.TextField(
+        help_text=("Use <a class='markdown-help' href='javascript:void(0)'"
+            ">Markdown</a> to add formatting, links and images to your post.")
+        )
 
     # The thread that this post belongs to.
     thread = models.ForeignKey(

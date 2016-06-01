@@ -85,6 +85,7 @@ a:hover {
 #content
 {
   padding-top: 1em;
+  padding-bottom: 1em;
 }
 
 .login #content
@@ -197,6 +198,15 @@ th
 {
 }
 
+.members-table
+{
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.members-table td,
+.members-table th,
 .forum table thead th,
 .forum table tbody td,
 .thread table.post tbody td
@@ -446,10 +456,10 @@ img#picture
   margin: 0.5em;
 }
 
-h6 { font-size: 18px; }
+h6 { font-size: 17px; }
 h5 { font-size: 18px; }
-h4 { font-size: 18px; }
-h3 { font-size: 18px; }
+h4 { font-size: 19px; }
+h3 { font-size: 20px; }
 h2 { font-size: 22px; }
 h1 { font-size: 28px; }
 
@@ -667,7 +677,7 @@ table.pages-table td
 
 tr.even-row
 {
-  background-color: #DCDCDC;
+  background-color: #EDF3FE;
 }
 
 .tester div
@@ -718,7 +728,13 @@ td.label-cell
   background-color: #ccc;
 }
 
-table.file-table td
+table.member-table
+{
+  margin: 1em 0;
+}
+
+table.file-table td,
+table.member-table td
 {
   padding: 0.5em;
 }
@@ -760,5 +776,21 @@ span.helptext
   display: inline-block;
   vertical-align: top;
   font-size: 75%;
+}
+
+.extraction-container
+{
+  font-family: monospace;
+  padding: 0 2em 1em 2em;
+}
+
+div.new-number-form-container ul li
+{
+  padding: 0.5em;
+}
+
+.markdown-help-inner-container
+{
+  max-height: 30em;
 }
 

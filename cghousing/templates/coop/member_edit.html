@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% load coop_extras %}
+
+{% block body_class %}class="member_new"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:members' %}">Members</a>
+                &gt;
+                <a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}"
+                   >{{ member.first_name }} {{ member.last_name }}</a>
+                &gt;
+                edit
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <h1>Edit Member {{ member.first_name }} {{ member.last_name }}</h1>
+
+  {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+  <form action="{% url 'coop:member_save' %}"
+    method="post"
+    class="default-form">
+    {% csrf_token %}
+    <ul>{{ form.as_ul }}</ul>
+    <input type="hidden" name="id" value="{{ member.id }}" />
+    <input type="submit" value="Save" />
+  </form>
+
+  <div class='new-number-form-container'>
+    <div class='new-number-form'>
+      <ul>
+        <li>
+          <div class='number-validation' style='display:none; color: red; padding: 0.5em 0;'></div>
+          <label for='number'>Phone number:</label>
+          <input type='text' name='number' maxlength='12' />
+        </li>
+        <li>
+          <label for='phone_type'>Type:</label>
+          <select name='phone_type'>
+            <option value=''></option>
+            <option value='cell'>Cell</option>
+            <option value='home'>Home</option>
+          </select>
+        </li>
+        <li><button class='save-new-number'>Save</button></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class='markdown-help-container'>
+    <div class='markdown-help-inner-container'>
+      {{ markdown_help_text | safe }}
+    </div>
+  </div>
+
+  <script type="text/javascript">
+      $(function () {
+
+        // Open the new phone number dialog when "New Number" is clicked.
+        $('a.new-number').click(function() {
+          $('.new-number-form-container').first().dialog('open');
+        });
+
+        // Create the jQueryUI dialog for adding a new phone number.
+        $('.new-number-form-container').first().dialog({
+          autoOpen: false,
+          modal: true,
+          closeText: '',
+          width: '50%',
+          title: 'Add a new phone number'
+        });
+
+        // Necessary preflight so that Django accepts our Ajax POST request.
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+              var csrftoken = getCookie('csrftoken');
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        var submitAttempted = false;
+
+        // Display the form error in the DOM.
+        function displayError(error) {
+          if (error && submitAttempted) {
+            $('div.number-validation').text(error).show();
+          } else {
+            $('div.number-validation').text('').hide();
+          }
+        }
+
+        // Client-side validation
+        var $numberInput = $('input[name=number]').first();
+        $numberInput.on('input', function() {
+          var error = validateNumber($numberInput.val());
+          displayError(error);
+        });
+
+        // close dialog
+        function closeDialog() {
+          $('.new-number-form-container').first().dialog('close');
+        }
+
+        // Add newly created phone number to the multiple choice select.
+        function addNewNumberToSelect(data) {
+          numberOption = '<option value="' + data.id + '" selected="selected">' + data.number;
+          if (data.phone_type) {
+            numberOption = numberOption + ' (' + data.phone_type + ')</option>';
+          } else {
+            numberOption = numberOption + '</option>';
+          }
+          $('select[name=phone_numbers]').prepend(numberOption);
+        }
+
+        // Save the new number that the user has entered.
+        var newNumberURL = '{% url 'coop:phone_number_save_ajax' %}';
+        $('button.save-new-number').click(function() {
+          submitAttempted = true;
+          var payload = {
+            number: $('input[name=number]').first().val(),
+            phone_type: $('select[name=phone_type]').first().val()
+          };
+          var error = validateNumber(payload.number);
+          displayError(error);
+          if (!error) {
+            $.ajax({
+                url: newNumberURL,
+                type: 'POST',
+                processData: false,
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                success: function(data) {
+                  if (data.id) {
+                    closeDialog();
+                    addNewNumberToSelect(data);
+                  } else {
+                    displayError('Failed to create a new phone number. Sorry');
+                  }
+                }
+            });
+          }
+        });
+
+        // Validate a phone number: must be in 123-456-7890 format.
+        function validateNumber(number) {
+          if (/\d{3}-\d{3}-\d{4}/.test(number)) {
+            return null;
+          } else {
+            return 'Please enter the phone number in the format 555-555-5555.';
+          }
+        }
+
+        // Return the cookie value corresponding to `name`.
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+      });
+
+  </script>
+
+
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+

@@ -70,3 +70,11 @@ def mime2awesome(mime_type):
 def mime2human(mime_type):
     return FILE_HUMAN.get(mime_type, 'file')
 
+@register.filter
+def addstr(arg1, arg2):
+    """Concatenate arg1 & arg2.
+
+    """
+
+    return str(arg1) + str(arg2)
+

@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% load markdown_deux_tags %}
+{% load coop_extras %}
+
+{% block body_class %}class="members"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                Members
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <h1>Members</h1>
+
+  <p>This page lists the current members of the co-op. Only members can see
+  this information.</p>
+
+  <p><input placeholder="&#xF002; filter members"
+    style="font-family:Lucida Grande, FontAwesome"
+    type="text" name="members_filter" /></p>
+
+  <p>
+
+    <a class="get-emails"
+       href="javascript:void(0)"
+       title="Get the emails of all of the visible members in a format that you can copy/paste into your email program."
+       ><i class="fa fa-envelope"></i>&nbsp;Get emails</a>
+
+    &nbsp;
+
+    <a class="get-membership-pdf"
+       href="{% url 'coop:members_pdf' %}"
+       title="Download a PDF file of the membership list so you can save it to your computer or print it."
+       ><i class="fa fa-file-pdf-o"></i>&nbsp;Get PDF</a>
+
+  </p>
+
+  <div class="extraction-container"></div>
+
+  {% if members %}
+  <table class="members-table">
+    <thead>
+      <tr>
+        <th class="last_name">Last Name</th>
+        <th class="first_name">First Name</th>
+        <th class="email">Email</th>
+        <th class="phone">Phone</th>
+        <th class="address">Address</th>
+        <th class="committees">Committee(s)</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for member in members %}
+      <tr class="member-row">
+        <td><a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}">{{ member.last_name }}</td>
+        <td><a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}">{{ member.first_name }}</td>
+        <td class="email">{{ member.email }}</td>
+        <td>{{ member.phone_numbers_string }}</td>
+        <td>#{{ member.unit.unit_number}}, {{ member.unit.block_number }}</td>
+        <td>{{ member.formatted_committees }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>There are no members.</p>
+  {% endif %}
+
+  <script type="text/javascript">
+      $(function () {
+
+        // Make the search filter work.
+        $('input[name=members_filter]').on('input', function() {
+          $('div.extraction-container').html('');
+          $('a.get-emails')
+            .attr('title', 'Get the emails of all of the visible members in a format that you can copy/paste into your email program.')
+            .html('<i class="fa fa-envelope"></i>&nbsp;Get emails');
+          var val = $('input[name=members_filter]').val().toLowerCase();
+          $('table.members-table tr.member-row').each(function(i, e) {
+            var hide = true;
+            var $row = $(e);
+            $row.find('td').each(function(cellI, cell) {
+              if ($(cell).text().toLowerCase().indexOf(val) !== -1) { hide = false; }
+            });
+            if (hide) { $row.hide(); } else { $row.show(); }
+          });
+        });
+
+        // Get emails when user clicks "Get emails"
+        $('a.get-emails').click(function() {
+          if ($('div.extraction-container').html().trim()) {
+            $('a.get-emails')
+              .attr('title', 'Get the emails of all of the visible members in a format that you can copy/paste into your email program.')
+              .html('<i class="fa fa-envelope"></i>&nbsp;Get emails');
+            $('div.extraction-container').html('');
+          } else {
+            $('a.get-emails')
+              .attr('title', 'Hide the emails.')
+              .html('<i class="fa fa-envelope"></i>&nbsp;Hide emails');
+            var emails = [];
+            $('td.email').each(function(i, e) {
+              var $cell = $(e);
+              if ($cell.is(':visible')) {
+                var email = $cell.text();
+                if (email) { emails.push(email); }
+              }
+            });
+            $('div.extraction-container').html(emails.join(', '));
+          }
+        });
+
+      });
+  </script>
+
+
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+
+

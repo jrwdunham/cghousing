@@ -14,12 +14,15 @@
     <!-- LOCAL BOOTSTRATP NOT WORKING TODO -->
     <!-- <link rel="stylesheet" href="{% static "coop/css/vendor/bootstrap.min.css" %}" /> -->
 
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+
     <link rel="stylesheet" href="{% static "coop/css/base.css" %}" />
     <link rel='shortcut icon' href="{% static "coop/images/logo-196.png" %}"
         type='image/x-icon' />
 
     <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
     <!-- <script src="{% static "coop/js/vendor/jquery-1.11.1.min.js" %}"></script> -->
+    <script src="https://code.jquery.com/ui/1.12.0-rc.2/jquery-ui.min.js" integrity="sha256-55Jz3pBCF8z9jBO1qQ7cIf0L+neuPTD1u7Ytzrp2dqo=" crossorigin="anonymous"></script>
 
     <title>{% block title %}{{ app_settings.coop_name }}{% endblock %}</title>
 </head>
@@ -136,20 +139,37 @@
 
     <script type="text/javascript">
         $(function () {
-            // When the page has finished loading,
-            // autofocus on the username field
+
+            // When the page has finished loading, autofocus on the username
+            // field.
             $('input[type=text]').first().focus();
 
+            // Make the leftbar headers toggle the visibility of their menu
+            // items.
             $('h2.pages-header').click(function() {
                 $('ul.pages-menu').slideToggle();
             });
-
             $('h2.members-only-header').click(function() {
                 $('ul.members-only-menu').slideToggle();
             });
-
             $('h2.administrators-only-header').click(function() {
                 $('ul.administrators-only-menu').slideToggle();
+            });
+
+            // Create the jQueryUI dialog for the Markdown help dialog.
+            $('.markdown-help-container').first().dialog({
+                autoOpen: false,
+                modal: false,
+                closeText: '',
+                width: '25%',
+                title: 'Markdown help',
+                position: { my: "right top", at: "right top", of: $(window)}
+            });
+
+            // Open the Markdown help dialog.
+            // https://daringfireball.net/projects/markdown/
+            $('a.markdown-help').click(function() {
+                $('.markdown-help-container').first().dialog('open');
             });
 
         });

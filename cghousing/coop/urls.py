@@ -7,6 +7,19 @@ urlpatterns = patterns('',
     url(r'^$', views.index_view, name='index'),
     url(r'^welcome$', views.index_view, name='welcome'),
 
+    # Members
+    url(r'^members/$', views.members_view, name='members'),
+    url(r'^members-pdf/$', views.members_pdf_view, name='members_pdf'),
+    url(r'^member/save/$', views.member_save_view, name='member_save'),
+    url(r'^member/(?P<full_name>[-_\w\d]+)/$', views.member_by_full_name_view,
+        name='member_by_full_name'),
+    url(r'^member/(?P<pk>\d+)/edit/$', views.member_edit_view,
+        name='member_edit'),
+
+    # Phone Numbers
+    url(r'^phonenumber/save/ajax$', views.phone_number_save_ajax_view,
+        name='phone_number_save_ajax'),
+
     # Pages
     url(r'^pages/$', views.pages_view, name='pages'),
     url(r'^page/$', views.page_new_view, name='page_new'),
