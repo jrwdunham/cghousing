@@ -616,6 +616,101 @@ def member_edit_view(request, pk):
 
 
 @login_required
+def member_change_password_view(request, pk):
+    """Either display the change password form, or change the password,
+    depending on HTTP method.
+
+    """
+
+    if request.method == 'POST':
+        return change_password(request, pk)
+    else:
+        return return_change_password_form(request, pk)
+
+
+def return_change_password_form(request, pk):
+    """Display a form for allow a member (or a superuser) to change their
+    password.
+
+    """
+
+    try:
+        member = Person.objects.filter(member=True).get(pk=pk)
+    except Person.DoesNotExist:
+        raise Http404("There is no member with id %s" % pk)
+    else:
+        if ((not request.user.is_superuser) and member.user.id != request.user.id):
+            return HttpResponseForbidden('You are not authorized to change this'
+                ' member\'s password.')
+        context = {'member': member}
+        context.update(get_global_context())
+        return render(request, 'coop/member_change_password.html', context)
+
+
+def change_password(request, pk):
+    """Change the user's password.
+
+    """
+
+    try:
+        member = Person.objects.filter(member=True).get(pk=pk)
+    except Person.DoesNotExist:
+        raise Http404("There is no member with id %s" % pk)
+    else:
+        context = {'member': member}
+        context.update(get_global_context())
+        if ((not request.user.is_superuser) and member.user.id != request.user.id):
+            return HttpResponseForbidden('You are not authorized to change this'
+                ' member\'s password.')
+        old_password = request.POST.get('old_password')
+        new_password = request.POST.get('new_password')
+        new_password_confirm = request.POST.get('new_password_confirm')
+        username = member.user.username
+        user = authenticate(username=username, password=old_password)
+        if user is None:
+            context['error_message'] = 'That is not your current password.'
+            return render(request, 'coop/member_change_password.html', context)
+        if not user.is_active:
+            context['error_message'] = ('Unable to authenticate. Your user is'
+                ' inactive')
+            return render(request, 'coop/member_change_password.html', context)
+        if new_password != new_password_confirm:
+            context['error_message'] = 'Passwords do not match.'
+            return render(request, 'coop/member_change_password.html', context)
+        error_msg = password_invalid(new_password)
+        if error_msg:
+            context['error_message'] = error_msg
+            return render(request, 'coop/member_change_password.html', context)
+        member.user.set_password(new_password)
+        member.user.save()
+        context = {'member': fix_member(member)}
+        context.update(get_global_context())
+        return render(request, 'coop/person_detail.html', context)
+
+
+def password_invalid(password):
+    """Return an error message if `password` is not secure enough. Otherwise,
+    return `None`.
+
+    """
+
+    error_msg = ('Passwords must be at least 8 characters long and must contain'
+        ' at least one lowercase letter, one uppercase letter, one digit and'
+        ' one punctuation character.')
+    if len(password) < 8:
+        return error_msg
+    if len([c for c in password if c in string.lowercase]) < 1:
+        return error_msg
+    if len([c for c in password if c in string.uppercase]) < 1:
+        return error_msg
+    if len([c for c in password if c in string.punctuation]) < 1:
+        return error_msg
+    if len([c for c in password if c in string.digits]) < 1:
+        return error_msg
+    return None
+
+
+@login_required
 @require_POST
 def member_save_view(request):
     """Handle a POST request to update an existing member.
@@ -1445,6 +1540,7 @@ def get_latex_membership_doc(members):
 \usepackage[a4paper,margin=0.5in,landscape]{geometry}
 \usepackage{tabularx}
 \usepackage{hhline}
+\usepackage{hyperref}
 \begin{document}
 
 \setlength\tabcolsep{2.5pt}
@@ -1510,7 +1606,7 @@ def get_latex_occupants_row(unit_no, occupants):
                 tex_escape(members),
                 tex_escape(children),
                 tex_escape(phone_nos),
-                tex_escape(emails),
+                emails,
                 tex_escape(committees),
                 tex_escape(chairships))
         )
@@ -1587,12 +1683,13 @@ def get_emails_for_latex_row(occupants):
 
     """
 
-    emails = list(set(p.email for p in occupants))
+    emails = list(set(p.email for p in occupants if p.email))
     if len(emails) == 1:
-        return emails[0]
+        return r'\href{mailto:%s}{%s}' % (tex_escape(emails[0]),
+            tex_escape(emails[0]))
     else:
-        return ', '.join('%s (%s)' % (p.email, p.first_name) for p in occupants
-                if p.email)
+        return ', '.join(r'\href{mailto:%s}{%s} (%s)' % (tex_escape(p.email),
+            tex_escape(p.email), p.first_name) for p in occupants if p.email)
 
 
 def get_cmtes_chrs_for_latex_row(occupants):

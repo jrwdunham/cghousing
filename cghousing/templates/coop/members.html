@@ -38,7 +38,7 @@
     <a class="get-membership-pdf"
        href="{% url 'coop:members_pdf' %}"
        title="Download a PDF file of the membership list so you can save it to your computer or print it."
-       ><i class="fa fa-file-pdf-o"></i>&nbsp;Get PDF</a>
+       ><i class="fa fa-file-pdf-o"></i>&nbsp;Membership List (PDF)</a>
 
   </p>
 
@@ -61,7 +61,7 @@
       <tr class="member-row">
         <td><a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}">{{ member.last_name }}</a></td>
         <td><a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}">{{ member.first_name }}</a></td>
-        <td class="email">{{ member.email }}</td>
+        <td class="email"><a href="mailto:{{ member.email }}">{{ member.email }}</a></td>
         <td>{{ member.phone_numbers_string }}</td>
         <td><a href="{% url 'coop:unit_by_block_unit_nos' member.unit.block_number|addstr:'-'|addstr:member.unit.unit_number %}"
                >#{{ member.unit.unit_number}}, {{ member.unit.block_number }}</a></td>
@@ -94,6 +94,19 @@
           });
         });
 
+        // Return a string representing an <a> with a mailto: href so that
+        // clicking on the emails will open the user's mail client correctly.
+        function getEmailsLink(emails) {
+            if (emails.length === 1) {
+                return '<a target="_blank" href="mailto:' + emails[0] + '">' +
+                    emails[0] + '</a>';
+            } else {
+                return '<a target="_blank" href="mailto:' + emails[0] +
+                    '?cc=' + emails.slice(1).join(';') + '">' +
+                    emails.join(', ') + '</a>';
+            }
+        }
+
         // Get emails when user clicks "Get emails"
         $('a.get-emails').click(function() {
           if ($('div.extraction-container').html().trim()) {
@@ -113,7 +126,8 @@
                 if (email) { emails.push(email); }
               }
             });
-            $('div.extraction-container').html(emails.join(', '));
+            var emails_link = getEmailsLink(emails);
+            $('div.extraction-container').html(emails_link);
           }
         });
 

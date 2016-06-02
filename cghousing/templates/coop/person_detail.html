@@ -26,7 +26,11 @@
     {% if user.is_superuser or user.id == member.user.id %}
     <p>
         <a href="{% url 'coop:member_edit' member.id %}">
-            <i class="fa fa-pencil"></i>&nbsp;Edit</a></p>
+            <i class="fa fa-pencil"></i>&nbsp;Edit</a>
+        &nbsp;
+        <a href="{% url 'coop:member_change_password' member.id %}">
+            <i class="fa fa-key"></i>&nbsp;Change password</a>
+    </p>
     {% endif %}
 {% endif %}
 

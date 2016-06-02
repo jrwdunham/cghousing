@@ -394,6 +394,7 @@ h2.pages-header
 }
 
 input[type=text],
+input[type=password],
 textarea,
 select,
 form.default-form input[type=text],
@@ -649,7 +650,8 @@ form.default-form label
   width: 10em;
 }
 
-form.default-form input[type=text]
+form.default-form input[type=text],
+form.default-form input[type=password]
 {
   line-height: 1.5em;
 }
