@@ -63,8 +63,9 @@
         <td><a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}">{{ member.first_name }}</a></td>
         <td class="email">{{ member.email }}</td>
         <td>{{ member.phone_numbers_string }}</td>
-        <td>#{{ member.unit.unit_number}}, {{ member.unit.block_number }}</td>
-        <td>{{ member.formatted_committees }}</td>
+        <td><a href="{% url 'coop:unit_by_block_unit_nos' member.unit.block_number|addstr:'-'|addstr:member.unit.unit_number %}"
+               >#{{ member.unit.unit_number}}, {{ member.unit.block_number }}</a></td>
+        <td>{{ member.formatted_committees | safe }}</td>
       </tr>
     {% endfor %}
     </tbody>

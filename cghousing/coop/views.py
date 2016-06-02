@@ -656,10 +656,12 @@ def fix_member(member):
     committees = []
     for c in member.committees.all():
         if c.name != 'Co-op':
+            url = reverse('coop:committee_by_url_name',
+                kwargs={'url_name': c.url_name})
             if c.chair and c.chair.id == member.id:
-                committees.append('%s (chair)' % c.name)
+                committees.append('<a href="%s">%s</a> (chair)' % (url, c.name))
             else:
-                committees.append(c.name)
+                committees.append('<a href="%s">%s</a>' % (url, c.name))
     member.formatted_committees = ', '.join(committees)
 
     member.formatted_children = ', '.join(
@@ -824,16 +826,7 @@ def units_view(request):
 
     units = Unit.objects.order_by('block_number', 'unit_number')
     for unit in units:
-        fo = []
-        for o in unit.occupants.all():
-            if o.member:
-                url = reverse('coop:member_by_full_name',
-                    kwargs={'full_name': '%s_%s' % (o.last_name, o.first_name)})
-                fo.append('<a href="%s">%s %s</a>' % (url, o.first_name,
-                    o.last_name))
-            else:
-                fo.append('%s %s' % (o.first_name, o.last_name))
-        unit.formatted_occupants = ', '.join(fo)
+        unit.formatted_occupants = get_formatted_occupants(unit)
     context = {
         'units': units,
         'current_page': 'units',
@@ -841,6 +834,23 @@ def units_view(request):
         }
     context.update(get_global_context())
     return render(request, 'coop/unit_list.html', context)
+
+
+def get_formatted_occupants(unit):
+    """Return a string of HTML links
+
+    """
+
+    fo = []
+    for o in unit.occupants.all():
+        if o.member:
+            url = reverse('coop:member_by_full_name',
+                kwargs={'full_name': '%s_%s' % (o.last_name, o.first_name)})
+            fo.append('<a href="%s">%s %s</a>' % (url, o.first_name,
+                o.last_name))
+        else:
+            fo.append('%s %s' % (o.first_name, o.last_name))
+    return ', '.join(fo)
 
 
 @login_required
@@ -860,6 +870,7 @@ def unit_by_block_unit_nos_view(request, block_unit_nos):
         .first()
     if not unit:
         raise Http404("There is no unit matching %s" % block_unit_nos)
+    unit.formatted_occupants = get_formatted_occupants(unit)
     context = {'unit': unit}
     context.update(get_global_context())
     return render(request, 'coop/unit_detail.html', context)

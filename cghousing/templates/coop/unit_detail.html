@@ -44,6 +44,11 @@
     <td>{{ unit.bathrooms }}</td>
   </tr>
 
+  <tr>
+    <td class="label-cell">Occupants</td>
+    <td>{{ unit.formatted_occupants | safe }}</td>
+  </tr>
+
 </table>
 
 <div class="markdown">{{ unit.page_content | markdown }}</div>
