@@ -543,7 +543,7 @@ def members_view(request):
     """
 
     members = [fix_member(m) for m in
-        Person.objects.order_by('last_name').filter(member=True)]
+        Person.objects.order_by('last_name').filter(member=True).filter(user__is_active=True)]
     context = {'members': members, 'request': request, 'current_page': 'members'}
     context.update(get_global_context())
     return render(request, 'coop/members.html', context)
@@ -555,7 +555,7 @@ def members_pdf_view(request):
 
     """
 
-    members = Person.objects.filter(member=True).all()
+    members = Person.objects.filter(member=True).filter(user__is_active=True).all()
     path = generate_membership_list_pdf(members)
     print 'path to pdf file: %s' % path
     if path:
@@ -582,6 +582,7 @@ def member_by_full_name_view(request, full_name):
         raise Http404("There is no member matching %s" % full_name)
     member = Person.objects\
         .filter(member=True)\
+        .filter(user__is_active=True)\
         .filter(first_name=first_name)\
         .filter(last_name=last_name)\
         .first()
@@ -635,7 +636,7 @@ def return_change_password_form(request, pk):
     """
 
     try:
-        member = Person.objects.filter(member=True).get(pk=pk)
+        member = Person.objects.filter(member=True).filter(user__is_active=True).get(pk=pk)
     except Person.DoesNotExist:
         raise Http404("There is no member with id %s" % pk)
     else:
@@ -653,7 +654,7 @@ def change_password(request, pk):
     """
 
     try:
-        member = Person.objects.filter(member=True).get(pk=pk)
+        member = Person.objects.filter(member=True).filter(user__is_active=True).get(pk=pk)
     except Person.DoesNotExist:
         raise Http404("There is no member with id %s" % pk)
     else:
@@ -719,7 +720,7 @@ def member_save_view(request):
 
     member_id = int(request.POST.get('id'))
     try:
-        member = Person.objects.filter(member=True).get(pk=member_id)
+        member = Person.objects.filter(member=True).filter(user__is_active=True).get(pk=member_id)
     except Person.DoesNotExist:
         raise Http404("There is no member with id %s" % member_id)
     form = PersonForm(instance=member, data=request.POST)
@@ -900,7 +901,7 @@ def committee_edit_view(request, pk):
             return HttpResponseForbidden('You are not authorized to edit this'
                 ' committee')
         form = CommitteeForm(instance=committee)
-        members = Person.objects.filter(member=True).order_by('last_name',
+        members = Person.objects.filter(member=True).filter(user__is_active=True).order_by('last_name',
             'first_name')
         form.fields['members'].queryset = members
         form.fields['chair'].queryset = members
