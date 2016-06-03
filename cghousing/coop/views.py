@@ -749,16 +749,19 @@ def fix_member(member):
 
     """
 
-    committees = []
-    for c in member.committees.all():
-        if c.name != 'Co-op':
-            url = reverse('coop:committee_by_url_name',
-                kwargs={'url_name': c.url_name})
-            if c.chair and c.chair.id == member.id:
-                committees.append('<a href="%s">%s</a> (chair)' % (url, c.name))
-            else:
-                committees.append('<a href="%s">%s</a>' % (url, c.name))
-    member.formatted_committees = ', '.join(committees)
+    if member.committee_excused:
+        member.formatted_committees = 'Excused by board'
+    else:
+        committees = []
+        for c in member.committees.all():
+            if c.name != 'Co-op':
+                url = reverse('coop:committee_by_url_name',
+                    kwargs={'url_name': c.url_name})
+                if c.chair and c.chair.id == member.id:
+                    committees.append('<a href="%s">%s</a> (chair)' % (url, c.name))
+                else:
+                    committees.append('<a href="%s">%s</a>' % (url, c.name))
+        member.formatted_committees = ', '.join(committees)
 
     member.formatted_children = ', '.join(
         c.first_name for c in member.children.all())
@@ -938,7 +941,7 @@ def get_formatted_occupants(unit):
     """
 
     fo = []
-    for o in unit.occupants.all():
+    for o in unit.occupants.filter(user__is_active=True):
         if o.member:
             url = reverse('coop:member_by_full_name',
                 kwargs={'full_name': '%s_%s' % (o.last_name, o.first_name)})
