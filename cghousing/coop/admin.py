@@ -356,6 +356,15 @@ class BlockRepresentativeAdmin(MyModelAdmin):
         return u'%s for block %s' % (obj.role, obj.block_number)
     get_role.short_description = 'Role'
 
+    fieldsets = [
+        (None, {
+            'fields': [
+                'block_number',
+                'committee',
+                'person',
+                'role']})
+    ]
+
 
 class PostInline(admin.StackedInline, PersonGetter):
     model = Post
@@ -588,7 +597,7 @@ admin.site.register(ApplicationSettings, ApplicationSettingsAdmin)
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(Committee, CommitteeAdmin)
 # admin.site.register(Move, MoveAdmin)
-# admin.site.register(BlockRepresentative, BlockRepresentativeAdmin)
+admin.site.register(BlockRepresentative, BlockRepresentativeAdmin)
 admin.site.register(Forum, ForumAdmin)
 admin.site.register(Thread, ThreadAdmin)
 admin.site.register(Post, PostAdmin)
