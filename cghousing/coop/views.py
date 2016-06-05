@@ -1121,6 +1121,16 @@ def minutes_view(request):
 
 
 @login_required
+def help_view(request):
+
+    help_page = Page.objects.filter(title='Help').first()
+    if help_page:
+        return display_page(request, help_page)
+    else:
+        raise Http404("There is no help page")
+
+
+@login_required
 def rules_view(request):
     """Display the rules page, if there is one. "The" rules page is the one
     whose title is "Rules". URL path is /rules/.

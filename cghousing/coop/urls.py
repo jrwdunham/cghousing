@@ -31,6 +31,7 @@ urlpatterns = patterns('',
         name='page_by_url_title'),
     url(r'^page/(?P<pk>\d+)/edit/$', views.page_edit_view, name='page_edit'),
     url(r'^minutes/$', views.minutes_view, name='minutes'),
+    url(r'^help/$', views.help_view, name='help'),
     url(r'^rules/$', views.rules_view, name='rules'),
 
     # Units
