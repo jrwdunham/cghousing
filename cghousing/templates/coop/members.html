@@ -45,14 +45,15 @@
   <div class="extraction-container"></div>
 
   {% if members %}
+  <div class="members-table-container">
   <table class="members-table">
     <thead>
       <tr>
         <th class="last_name">Last Name</th>
         <th class="first_name">First Name</th>
         <th class="email">Email</th>
-        <th class="phone">Phone</th>
         <th class="address">Address</th>
+        <th class="phone">Phone</th>
         <th class="committees">Committee(s)</th>
       </tr>
     </thead>
@@ -62,14 +63,15 @@
         <td><a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}">{{ member.last_name }}</a></td>
         <td><a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}">{{ member.first_name }}</a></td>
         <td class="email"><a href="mailto:{{ member.email }}">{{ member.email }}</a></td>
-        <td>{{ member.phone_numbers_string }}</td>
         <td><a href="{% url 'coop:unit_by_block_unit_nos' member.unit.block_number|addstr:'-'|addstr:member.unit.unit_number %}"
                >#{{ member.unit.unit_number}}, {{ member.unit.block_number }}</a></td>
+        <td>{{ member.phone_numbers_string }}</td>
         <td>{{ member.formatted_committees | safe }}</td>
       </tr>
     {% endfor %}
     </tbody>
   </table>
+  </div>
   {% else %}
     <p>There are no members.</p>
   {% endif %}

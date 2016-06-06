@@ -199,6 +199,12 @@ th
 {
 }
 
+.members-table-container
+{
+  height: 50vh;
+  overflow: scroll;
+}
+
 .members-table
 {
   display: block;
