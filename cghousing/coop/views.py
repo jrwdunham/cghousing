@@ -847,9 +847,7 @@ def committee_save_view(request):
         committee = Committee.objects.get(pk=committee_id)
     except Committee.DoesNotExist:
         raise Http404("There is no committee with id %s" % committee_id)
-    if ((not request.user.is_superuser) and
-        request.user.id not in [m.user.id for m in
-        committee.members.all()]):
+    if not user_can_edit_committee(request.user, committee):
         return HttpResponseForbidden('You are not authorized to edit this'
                 ' committee')
     form = CommitteeForm(instance=committee, data=request.POST)
@@ -879,11 +877,34 @@ def committee_by_url_name_view(request, url_name):
             raise Http404("Committee %s does not exist" % url_name)
         committee.formatted_members = get_formatted_members(committee)
         committee.member_ids = [m.user.id for m in committee.members.all()]
-        context = {'committee': committee}
+        context = {
+                'committee': committee,
+                'user_can_edit_committee':
+                    user_can_edit_committee(request.user, committee)
+                    }
         context.update(get_global_context())
         return render(request, 'coop/committee_detail.html', context)
     except Committee.DoesNotExist:
         raise Http404("Committee %s does not exist" % url_name)
+
+
+def user_can_edit_committee(user, committee):
+    """Return `True` if the `user` can edit `committee`. Superusers, members of
+    `committee` and chairs of the Participation and Membership committees can
+    edit `committee`.
+
+    """
+
+    if user.is_superuser:
+        return True
+    elif user.id in [m.user.id for m in committee.members.all()]:
+        return True
+    else:
+        for c in user.person.committees.all():
+            if (c.name in ['Participation', 'Membership'] and
+                c.chair.id == user.person.id):
+                return True
+    return False
 
 
 @login_required
@@ -898,9 +919,7 @@ def committee_edit_view(request, pk):
     except Committee.DoesNotExist:
         raise Http404("There is no committee with id %s" % pk)
     else:
-        if ((not request.user.is_superuser) and
-            request.user.id not in [m.user.id for m in
-            committee.members.all()]):
+        if not user_can_edit_committee(request.user, committee):
             return HttpResponseForbidden('You are not authorized to edit this'
                 ' committee')
         form = CommitteeForm(instance=committee)

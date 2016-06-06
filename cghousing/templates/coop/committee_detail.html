@@ -23,7 +23,7 @@
 
 <h1>{{ committee.name }} Committee</h1>
 
-{% if user.is_superuser or user.id in committee.member_ids %}
+{% if user_can_edit_committee %}
   <a class="action-link"
      href="{% url 'coop:committee_edit' committee.id %}"
      title="Click to edit this committee."
