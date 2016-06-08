@@ -698,3 +698,67 @@ class MeetingMinutes(Base):
 
     class Meta:
         verbose_name_plural = "Meeting minutes"
+
+
+class ParticipationRequirement(Base):
+    """Model for holding participation requirements. For example, attending
+
+    At CG, the participation requirements are as follows:
+
+    1. Attend 6 of the 10 monthly members' meetings (Oct - Sep, minus Dec and
+       Aug)
+    2. Participate in Fall clean-up
+    3. Participate in Spring clean-up
+    4. Be an active member of at least one committee
+
+    """
+
+    def __unicode__(self):
+        return 'Participation Requirement: %s' % (self.name)
+
+    # Participation requirement name.
+    name = models.CharField(
+        max_length=200
+    )
+
+    # Description of the participation requirement.
+    description = models.TextField(
+        blank=True
+    )
+
+    # Date when the requirement occurs or when it will be assessed.
+    date = models.DateField(
+        help_text=("Date when the requirement occurs or when it will be"
+            " assessed.")
+        )
+
+    # Fulfillers are the persons who have fulfilled this participation
+    # requirement.
+    fulfillers = models.ManyToManyField(
+        Person,
+        related_name='fulfilled_participation_requirements',
+        blank=True,
+        help_text=("The members who have fulfilled this participation"
+            " requirement.")
+    )
+
+    # Shirkers are the persons who have failed to fulfill this participation
+    # requirement.
+    shirkers = models.ManyToManyField(
+        Person,
+        related_name='shirked_participation_requirements',
+        blank=True,
+        help_text=("The members who have shirked (not fulfilled) this"
+            " participation requirement.")
+    )
+
+    # Excusees are the persons who have been excused from fulfilling this
+    # participation requirement.
+    excusees = models.ManyToManyField(
+        Person,
+        related_name='excused_participation_requirements',
+        blank=True,
+        help_text=("The members who are excused from fulfilling this"
+            " participation requirement.")
+    )
+

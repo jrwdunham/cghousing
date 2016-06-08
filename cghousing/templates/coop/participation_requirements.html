@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% load markdown_deux_tags %}
+{% load coop_extras %}
+
+{% block body_class %}class="members"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                Participation Requirements
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <h1>Participation Requirements</h1>
+
+  {% if user_authorized %}
+
+    <p>This page lists the participation requirements defined for the co-op.</p>
+
+    <a class="action-link"
+      href="{% url 'coop:participation_requirement_new'%}"
+      title="Create a new participation requirement"
+      ><i class="fa fa-fw fa-plus"></i>New Participation Requirement</a>
+
+    <div class="participation-requirements-table-container">
+      <table class="participation-requirements-table">
+        <thead>
+          <tr>
+            <th>Unit #</th>
+            <th>Members</th>
+            {% for pr in participation_requirements %}
+            <th title="{{ pr.description }}"
+                ><a href="{% url 'coop:participation_requirement' pr.id %}"
+                   >{{ pr.name }}</a></th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for unit in units %}
+          <tr>
+            <td><a href="{% url 'coop:unit_by_block_unit_nos' unit.block_number|addstr:'-'|addstr:unit.unit_number %}"
+               >#{{ unit.unit_number}}, {{ unit.block_number }}</a></td>
+            <td>{{ unit.formatted_occupants | safe }}</td>
+            {% for up in unit.participation %}
+            <td>{{ up | safe }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  {% else %}
+
+    <p>Sorry, only the chair of the participation committee is permitted to
+    view this information.</p>
+
+  {% endif %}
+
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+

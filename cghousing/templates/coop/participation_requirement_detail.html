@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% load markdown_deux_tags %}
+{% load humanize %}
+{% load coop_extras %}
+
+{% block body_class %}class="participation-requirement"{% endblock %}
+
+
+{% block content %}
+
+<p>
+    <a href="{% url 'coop:participation_requirement_edit' participation_requirement.id %}">
+        <i class="fa fa-pencil"></i>&nbsp;Edit</a></p>
+
+<div id="content-main">
+
+  <h1>Participation requirement <i class="italic">{{ participation_requirement.name }}</i></h1>
+
+  <p>Date: {{ participation_requirement.date | date:"M d, Y" }}</p>
+
+  {% if participation_requirement.description %}
+  <p>{{ participation_requirement.description }}</p>
+  {% endif %}
+
+  <h2><i class="ok fa fa-trophy"></i>&nbsp;Fulfilled Requirement</h2>
+
+  {% for member in participation_requirement.fulfillers.all %}
+    {% if forloop.last %}
+    <a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}"
+      >{{ member.first_name}} {{member.last_name}}</a>
+    {% else %}
+    <a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}"
+      >{{ member.first_name}} {{member.last_name}}</a>,
+    {% endif %}
+  {% endfor %}
+
+
+  <h2><i class="error fa fa-circle-o"></i>&nbsp;Shirked Requirement</h2>
+
+  {% for member in participation_requirement.shirkers.all %}
+    {% if forloop.last %}
+    <a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}"
+      >{{ member.first_name}} {{member.last_name}}</a>
+    {% else %}
+    <a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}"
+      >{{ member.first_name}} {{member.last_name}}</a>,
+    {% endif %}
+  {% endfor %}
+
+
+  <h2><i class="fa fa-times"></i>&nbsp;Excused from Requirement</h2>
+
+  {% for member in participation_requirement.excusees.all %}
+    {% if forloop.last %}
+    <a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}"
+      >{{ member.first_name}} {{member.last_name}}</a>
+    {% else %}
+    <a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}"
+      >{{ member.first_name}} {{member.last_name}}</a>,
+    {% endif %}
+  {% endfor %}
+
+</div>
+
+{% endblock %}
+
+

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% load markdown_deux_tags %}
+{% load humanize %}
+{% load coop_extras %}
+
+{% block body_class %}class="person"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:members' %}">Members</a>
+                &gt;
+                <a href="{% url 'coop:member_by_full_name' member.last_name|addstr:'_'|addstr:member.first_name %}"
+                   >{{ member.first_name}} {{ member.last_name }}</a>
+                &gt;
+                participation record
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+
+<h1>{{ member.first_name}} {{ member.last_name }}'s Participation Record</h1>
+
+<table class="participation-table">
+  <thead>
+    <tr>
+      <th>Requirement</th>
+      <th>Date</th>
+      <th>Fulfilled?</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for date_, pr in requirements %}
+    <tr>
+      <td title="{{ pr.description }}">{{ pr.name }}</td>
+      <td>{{ date_ | date:"M d, Y" }}</td>
+      <td>
+      {% if pr.status == 'fulfilled' %}
+        <i class="ok fa fa-trophy"></i>&nbsp;Fulfilled
+      {% elif pr.status == 'excused' %}
+        <i class="fa fa-thumbs-o-up"></i>Excused</p>
+      {% elif pr.status == 'shirked' %}
+        <i class="error fa fa-circle-o"></i>&nbsp;Not fulfilled
+      {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
+

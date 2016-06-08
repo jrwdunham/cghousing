@@ -6,6 +6,7 @@ import errno
 import pprint
 import subprocess
 import re
+from itertools import chain
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
@@ -22,7 +23,8 @@ from django.forms.widgets import HiddenInput
 from django.db.models import Q
 from coop.models import (
     Forum, Thread, Post, ApplicationSettings, Page, File, Person, UPLOADS_DIR,
-    BlockRepresentative, Committee, PhoneNumber, Unit, Committee)
+    BlockRepresentative, Committee, PhoneNumber, Unit, Committee,
+    ParticipationRequirement)
 
 # TODO:
 #
@@ -532,6 +534,189 @@ def file_save_view(request):
         return render(request, 'coop/file_new.html', context)
 
 
+# Participation Requirement-related Views, etc.
+################################################################################
+
+@login_required
+def participation_requirements_view(request):
+    """Display the participation requirements that have been defined for this
+    co-op. All users can view this page; however, if a user is not a superuser
+    or is not the chair of the participation committee, then there will be no
+    information there for them to view.
+
+    """
+
+    participation_requirements = ParticipationRequirement.objects\
+        .order_by('date').all()
+    user_authorized = (request.user.is_superuser or
+        user_is_participation_chair(request.user))
+    context = {'participation_requirements': participation_requirements,
+        'request': request, 'user_authorized': user_authorized}
+    if user_authorized:
+        context['units'] = Unit.objects.order_by('block_number', 'unit_number')
+        for unit in context['units']:
+            unit.formatted_occupants = get_formatted_occupants(unit)
+            unit.participation = get_unit_participation(unit,
+                    participation_requirements)
+    context.update(get_global_context())
+    return render(request, 'coop/participation_requirements.html', context)
+
+
+def get_unit_participation(unit, participation_requirements):
+    """Return a list of HTML strings representing whether the unit has
+    fulfilled, shirked or been excused from each participation requirement in
+    `participation_requirements`.
+
+    Rules: if one member from the unit has fulfilled, the unit has fulfilled.
+    Otherwise, if one has shirked, the unit has shirked. Otherwise if one is
+    excused, the unit is excused. Otherwise, participation by this unit at this
+    time is not applicable (null).
+
+    """
+
+    result = []
+    occupants = unit.occupants.filter(member=True).all()
+    for pr in participation_requirements:
+        participation_list = []
+        for occupant in occupants:
+            if occupant in pr.fulfillers.all():
+                participation_list.append('fulfilled')
+            elif occupant in pr.excusees.all():
+                participation_list.append('excused')
+            elif occupant in pr.shirkers.all():
+                participation_list.append('shirked')
+            else:
+                participation_list.append(None)
+        if 'fulfilled' in participation_list:
+            occupants_result = ('<i class="pr-icon ok fa fa-trophy"'
+                ' title="Unit/member fulfilled participation requirement'
+                ' %s.">&nbsp;</i>' % pr.name)
+        elif 'shirked' in participation_list:
+            occupants_result = ('<i class="pr-icon error fa fa-circle-o"'
+                ' title="Unit/member failed to fulfill participation'
+                ' requirement %s.">&nbsp;</i>' % pr.name)
+        elif 'excused' in participation_list:
+            occupants_result = ('<i class="pr-icon fa fa-times"'
+                ' title="Unit/member is excused from fulfilling participation'
+                ' requirement %s.">&nbsp;</i>' % pr.name)
+        else:
+            occupants_result = ''
+        result.append(occupants_result)
+    return result
+
+
+@login_required
+def participation_requirement_new_view(request):
+    """Display the form for creating a new participation requirement at
+    /participation-requirement.
+
+    """
+
+    if ((not request.user.is_superuser) and
+        (not user_is_participation_chair(request.user))):
+        return HttpResponseForbidden('You are not authorized to create new'
+            ' participation requirements.')
+    form = ParticipationRequirementForm()
+    context = {'form': form}
+    context.update(get_global_context())
+    return render(request, 'coop/participation_requirement_new.html', context)
+
+
+@login_required
+def participation_requirement_edit_view(request, pk):
+    """Display the form for editing an existing participation requirement.
+
+    """
+
+    if ((not request.user.is_superuser) and
+        (not user_is_participation_chair(request.user))):
+        return HttpResponseForbidden('You are not authorized to edit'
+            ' participation requirements.')
+    try:
+        pr = ParticipationRequirement.objects.get(pk=pk)
+    except ParticipationRequirement.DoesNotExist:
+        raise Http404("There is no participation requirement with id %s" % pk)
+    else:
+        form = ParticipationRequirementForm(instance=pr)
+        context = {'form': form, 'participation_requirement': pr}
+        context.update(get_global_context())
+        return render(request, 'coop/participation_requirement_edit.html',
+                context)
+
+
+def user_is_participation_chair(user):
+    """Return `True` if `user` is the participation chair; `False` otherwise.
+
+    """
+
+    for c in user.person.committees.all():
+        if c.name == 'Participation' and c.chair.id == user.person.id:
+            return True
+    return False
+
+
+@login_required
+def participation_requirement_view(request, pk):
+    """Display a participation requirement, given its primary key `pk`, e.g.,
+    /participation-requirement/2/.
+
+    """
+
+    if ((not request.user.is_superuser) and
+        (not user_is_participation_chair(request.user))):
+        return HttpResponseForbidden('You are not authorized to view'
+            ' participation requirements.')
+    pr = ParticipationRequirement.objects.get(pk=pk)
+    context = {'participation_requirement': pr}
+    context.update(get_global_context())
+    return render(request, 'coop/participation_requirement_detail.html',
+        context)
+
+
+@login_required
+@require_POST
+def participation_requirement_save_view(request):
+    """Handle a POST request to create a new participation requirement or
+    update an existing one.
+
+    """
+
+    if ((not request.user.is_superuser) and
+        (not user_is_participation_chair(request.user))):
+        return HttpResponseForbidden('You are not authorized to save'
+            ' participation requirements.')
+    pr_id = request.POST.get('id')
+    if pr_id:
+        pr = ParticipationRequirement.objects.get(pk=pr_id)
+        form = ParticipationRequirementForm(instance=pr, data=request.POST)
+    else:
+        form = ParticipationRequirementForm(request.POST)
+    if form.is_valid():
+        if pr_id:
+            updated_pr = form.save(commit=False)
+            updated_pr.modifier = request.user
+            updated_pr.save()
+            form.save_m2m()
+            return HttpResponseRedirect(reverse('coop:participation_requirement',
+                kwargs={'pk': updated_pr.id}))
+        else:
+            new_pr = form.save(commit=False)
+            new_pr.creator = new_pr.modifier = request.user
+            new_pr.save()
+            form.save_m2m()
+            return HttpResponseRedirect(reverse('coop:participation_requirement',
+                kwargs={'pk': new_pr.id}))
+    else:
+        context = {'form': form}
+        context.update(get_global_context())
+        if pr_id:
+            context['participation_requirement'] = pr
+            return render(request, 'coop/participation_requirement_edit.html',
+                    context)
+        return render(request, 'coop/participation_requirement_new.html',
+                context)
+
+
 # Member-related Views, etc.
 ################################################################################
 
@@ -566,6 +751,37 @@ def members_pdf_view(request):
         return response
     else:
         return HttpResponseRedirect(reverse('coop:members'))
+
+
+@login_required
+def member_participation_record_view(request, pk):
+    """Display the participation record for the member with `id=pk`.
+
+    """
+
+    try:
+        member = Person.objects.filter(member=True).get(pk=pk)
+    except Person.DoesNotExist:
+        raise Http404("There is no member with id %s" % pk)
+    if ((not request.user.is_superuser) and
+        (not request.user.id == member.user.id) and
+        (not user_is_participation_chair(request.user))):
+        return HttpResponseForbidden('You are not authorized to view this'
+                ' member\'s participation record.')
+    fulfilled = [pr for pr in member.fulfilled_participation_requirements.order_by('date').all()]
+    for pr in fulfilled:
+        pr.status = 'fulfilled'
+    shirked = [pr for pr in member.shirked_participation_requirements.order_by('date').all()]
+    for pr in shirked:
+        pr.status = 'shirked'
+    excused = [pr for pr in member.excused_participation_requirements.order_by('date').all()]
+    for pr in excused:
+        pr.status = 'excused'
+    requirements = fulfilled + shirked + excused
+    requirements = sorted([(pr.date, pr) for pr in requirements])
+    context = {'member': member, 'requirements': requirements}
+    context.update(get_global_context())
+    return render(request, 'coop/member_participation_record.html', context)
 
 
 @login_required
@@ -1439,6 +1655,17 @@ class CommitteeForm(ModelForm):
     class Meta:
         model = Committee
         fields = ['chair', 'members', 'description', 'page_content']
+
+
+class ParticipationRequirementForm(ModelForm):
+    """Form for editing participation requirements.
+
+    """
+
+    class Meta:
+        model = ParticipationRequirement
+        fields = ['name', 'description', 'date', 'fulfillers', 'shirkers',
+                'excusees']
 
 
 ################################################################################

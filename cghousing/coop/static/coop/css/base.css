@@ -205,13 +205,23 @@ th
   overflow: scroll;
 }
 
-.members-table
+.participation-requirements-table-container
+{
+  height: 65vh;
+  overflow: scroll;
+}
+
+
+.members-table,
+.participation-requirements-table
 {
   display: block;
   overflow-x: auto;
   white-space: nowrap;
 }
 
+.participation-requirements-table td,
+.participation-requirements-table th,
 .members-table td,
 .members-table th,
 .forum table thead th,
@@ -389,7 +399,8 @@ p
 
 }
 
-.header-button
+.header-button,
+.pr-icon
 {
   cursor: pointer;
 }
@@ -690,6 +701,11 @@ tr.even-row
   background-color: #EDF3FE;
 }
 
+table.participation-requirements-table tr:nth-child(even)
+{
+  background-color: #EDF3FE;
+}
+
 .tester div
 {
   border: 1px solid black;
@@ -778,7 +794,8 @@ img.file-data-img
   padding-left: 1em;
 }
 
-.markdown em
+.markdown em,
+i.italic
 {
   font-style: italic;
 }
@@ -810,5 +827,10 @@ div.new-number-form-container ul li
 .markdown-help-inner-container
 {
   max-height: 30em;
+}
+
+div.indent-block
+{
+  padding-left: 2em;
 }
 

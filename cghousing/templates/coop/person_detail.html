@@ -65,6 +65,14 @@
   </tr>
   {% endif %}
 
+  {% if user.person.id == member.id or user.is_superuser %}
+  <tr>
+    <td class="label-cell">Participation</td>
+    <td><a href="{% url 'coop:member_participation_record' member.id %}"
+           >My Participation Record</a></td>
+  </tr>
+  {% endif %}
+
 </table>
 
 <div class="markdown">{{ member.page_content | markdown }}</div>

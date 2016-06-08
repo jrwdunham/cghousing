@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block body_class %}class="participation_requirement_new"{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="breadcrumbs">
+                <a href="{% url 'coop:participation_requirements' %}"
+                  >Participation Requirements</a>
+                &gt;
+                new
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <h1>Create a New Participation Requirement</h1>
+
+  {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+  <form action="{% url 'coop:participation_requirement_save' %}"
+    method="post"
+    class="default-form">
+    {% csrf_token %}
+    <ul>{{ form.as_ul }}</ul>
+    <input type="submit" value="Save" />
+  </form>
+
+{% endblock %}
+
+{% block rightbar %}{% endblock %}
+
+
+
