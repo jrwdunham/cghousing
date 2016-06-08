@@ -739,7 +739,10 @@ class ParticipationRequirement(Base):
         related_name='fulfilled_participation_requirements',
         blank=True,
         help_text=("The members who have fulfilled this participation"
-            " requirement.")
+            " requirement. <a class='select-all-fulfillers'"
+            " href='javascript:void(0)'>Select All</a> / <a"
+            " class='deselect-all-fulfillers' href='javascrip:void(0)'>De-select"
+            " All</a>.")
     )
 
     # Shirkers are the persons who have failed to fulfill this participation
@@ -749,7 +752,10 @@ class ParticipationRequirement(Base):
         related_name='shirked_participation_requirements',
         blank=True,
         help_text=("The members who have shirked (not fulfilled) this"
-            " participation requirement.")
+            " participation requirement. <a class='select-all-shirkers'"
+            " href='javascript:void(0)'>Select All</a> / <a"
+            " class='deselect-all-shirkers' href='javascript:void(0)'>De-select"
+            " All</a>.")
     )
 
     # Excusees are the persons who have been excused from fulfilling this
@@ -759,6 +765,9 @@ class ParticipationRequirement(Base):
         related_name='excused_participation_requirements',
         blank=True,
         help_text=("The members who are excused from fulfilling this"
-            " participation requirement.")
+            " participation requirement. <a class='select-all-excusees'"
+            " href='javascript:void(0)'>Select All</a> / <a"
+            " class='deselect-all-excusees' href='javascript:void(0)'>De-select"
+            " All</a>.")
     )
 

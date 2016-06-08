@@ -618,7 +618,7 @@ def participation_requirement_new_view(request):
         return HttpResponseForbidden('You are not authorized to create new'
             ' participation requirements.')
     form = ParticipationRequirementForm()
-    context = {'form': form}
+    context = {'form': form, 'participation_edit_js': participation_edit_js}
     context.update(get_global_context())
     return render(request, 'coop/participation_requirement_new.html', context)
 
@@ -639,7 +639,8 @@ def participation_requirement_edit_view(request, pk):
         raise Http404("There is no participation requirement with id %s" % pk)
     else:
         form = ParticipationRequirementForm(instance=pr)
-        context = {'form': form, 'participation_requirement': pr}
+        context = {'form': form, 'participation_requirement': pr,
+                    'participation_edit_js': participation_edit_js}
         context.update(get_global_context())
         return render(request, 'coop/participation_requirement_edit.html',
                 context)
@@ -708,7 +709,7 @@ def participation_requirement_save_view(request):
             return HttpResponseRedirect(reverse('coop:participation_requirement',
                 kwargs={'pk': new_pr.id}))
     else:
-        context = {'form': form}
+        context = {'form': form, 'participation_edit_js': participation_edit_js}
         context.update(get_global_context())
         if pr_id:
             context['participation_requirement'] = pr
@@ -2219,3 +2220,68 @@ I will be the second paragraph. I have more words than the first.</code></pre>
          href="https://daringfireball.net/projects/markdown/">Markdown web
          site</a>.</p>
 '''.strip()
+
+participation_edit_js = '''
+
+      $(function () {
+
+          // Logic does the following: when a fulfiller is checked, that
+          // fulfiller is unchecked as a shirker and unchecked as an excusee.
+          $('input[name=fulfillers]').change(function(i, e) {
+              if (this.checked) {
+                  var val = $(this).val();
+                  $('input[name=shirkers][value=' + val + '],input[name=excusees][value=' + val + ']')
+                      .prop('checked', false);
+              }
+          });
+
+          $('input[name=shirkers]').change(function(i, e) {
+              if (this.checked) {
+                  var val = $(this).val();
+                  $('input[name=fulfillers][value=' + val + '],input[name=excusees][value=' + val + ']')
+                      .prop('checked', false);
+              }
+          });
+
+          $('input[name=excusees]').change(function(i, e) {
+              if (this.checked) {
+                  var val = $(this).val();
+                  $('input[name=shirkers][value=' + val + '],input[name=fulfillers][value=' + val + ']')
+                      .prop('checked', false);
+              }
+          });
+
+          $('a.select-all-fulfillers').click(function() {
+            $('input[name=fulfillers]').prop('checked', true);
+            $('input[name=shirkers],input[name=excusees]')
+                .prop('checked', false);
+          });
+
+          $('a.deselect-all-fulfillers').click(function() {
+            $('input[name=fulfillers]').prop('checked', false);
+          });
+
+          $('a.select-all-shirkers').click(function() {
+            $('input[name=shirkers]').prop('checked', true);
+            $('input[name=fulfillers],input[name=excusees]')
+                .prop('checked', false);
+          });
+
+          $('a.deselect-all-shirkers').click(function() {
+            $('input[name=shirkers]').prop('checked', false);
+          });
+
+          $('a.select-all-excusees').click(function() {
+            $('input[name=excusees]').prop('checked', true);
+            $('input[name=fulfillers],input[name=shirkers]')
+                .prop('checked', false);
+          });
+
+          $('a.deselect-all-excusees').click(function() {
+            $('input[name=excusees]').prop('checked', false);
+          });
+
+      });
+
+      '''
+

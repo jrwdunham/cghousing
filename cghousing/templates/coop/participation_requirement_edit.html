@@ -35,35 +35,7 @@
   </form>
 
   <script type="text/javascript">
-      $(function () {
-
-          // Logic does the following: when a fulfiller is checked, that
-          // fulfiller is unchecked as a shirker and unchecked as an excusee.
-          $('input[name=fulfillers]').change(function(i, e) {
-              if (this.checked) {
-                  var val = $(this).val();
-                  $('input[name=shirkers][value=' + val + '],input[name=excusees][value=' + val + ']')
-                      .attr('checked', false);
-              }
-          });
-
-          $('input[name=shirkers]').change(function(i, e) {
-              if (this.checked) {
-                  var val = $(this).val();
-                  $('input[name=fulfillers][value=' + val + '],input[name=excusees][value=' + val + ']')
-                      .attr('checked', false);
-              }
-          });
-
-          $('input[name=excusees]').change(function(i, e) {
-              if (this.checked) {
-                  var val = $(this).val();
-                  $('input[name=shirkers][value=' + val + '],input[name=fulfillers][value=' + val + ']')
-                      .attr('checked', false);
-              }
-          });
-
-      });
+      {{ participation_edit_js | safe }}
   </script>
 
 {% endblock %}
