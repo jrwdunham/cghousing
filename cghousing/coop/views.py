@@ -18,7 +18,8 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.forms import Form, ModelForm, CharField, Textarea, ModelChoiceField, ValidationError
+from django.forms import (Form, ModelForm, CharField, Textarea,
+        ModelChoiceField, ValidationError, CheckboxSelectMultiple)
 from django.forms.widgets import HiddenInput
 from django.db.models import Q
 from coop.models import (
@@ -1662,10 +1663,20 @@ class ParticipationRequirementForm(ModelForm):
 
     """
 
+    def __init__(self, *args, **kwargs):
+        super(ParticipationRequirementForm, self).__init__(*args, **kwargs)
+        members = Person.objects.order_by('last_name').filter(member=True)
+        self.fields['fulfillers'].queryset = members
+        self.fields['shirkers'].queryset = members
+        self.fields['excusees'].queryset = members
+
     class Meta:
         model = ParticipationRequirement
         fields = ['name', 'description', 'date', 'fulfillers', 'shirkers',
                 'excusees']
+        widgets = {'fulfillers': CheckboxSelectMultiple,
+            'shirkers': CheckboxSelectMultiple,
+            'excusees': CheckboxSelectMultiple}
 
 
 ################################################################################
