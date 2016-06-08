@@ -231,6 +231,13 @@ th
   padding: 5px;
 }
 
+.pr-cell
+{
+  padding: 1em;
+  text-align: center;
+  border-left: 2px solid #EDF3FE;
+}
+
 td.post,
 td.post-quick-reply,
 .thread table.post-quick-reply td

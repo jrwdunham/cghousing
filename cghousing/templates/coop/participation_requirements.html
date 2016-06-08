@@ -35,7 +35,7 @@
             <th>Unit #</th>
             <th>Members</th>
             {% for pr in participation_requirements %}
-            <th title="{{ pr.description }}"
+            <th class="pr-cell" title="{{ pr.description }}"
                 ><a href="{% url 'coop:participation_requirement' pr.id %}"
                    >{{ pr.name }}</a></th>
             {% endfor %}
@@ -48,7 +48,7 @@
                >#{{ unit.unit_number}}, {{ unit.block_number }}</a></td>
             <td>{{ unit.formatted_occupants | safe }}</td>
             {% for up in unit.participation %}
-            <td>{{ up | safe }}</td>
+            <td class="pr-cell">{{ up | safe }}</td>
             {% endfor %}
           </tr>
           {% endfor %}
