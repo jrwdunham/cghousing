@@ -1,3 +1,4 @@
+import time
 import os
 import string
 import magic
@@ -548,13 +549,17 @@ def participation_requirements_view(request):
     """
 
     participation_requirements = ParticipationRequirement.objects\
-        .order_by('date').all()
+        .order_by('date')\
+        .prefetch_related('fulfillers', 'shirkers', 'excusees')\
+        .all()
     user_authorized = (request.user.is_superuser or
         user_is_participation_chair(request.user))
     context = {'participation_requirements': participation_requirements,
         'request': request, 'user_authorized': user_authorized}
     if user_authorized:
-        context['units'] = Unit.objects.order_by('block_number', 'unit_number')
+        context['units'] = Unit.objects\
+            .order_by('block_number', 'unit_number')\
+            .prefetch_related('occupants')
         for unit in context['units']:
             unit.formatted_occupants = get_formatted_occupants(unit)
             unit.participation = get_unit_participation(unit,
@@ -1178,14 +1183,15 @@ def get_formatted_occupants(unit):
     """
 
     fo = []
-    for o in unit.occupants.filter(user__is_active=True):
-        if o.member:
-            url = reverse('coop:member_by_full_name',
-                kwargs={'full_name': '%s_%s' % (o.last_name, o.first_name)})
-            fo.append('<a href="%s">%s %s</a>' % (url, o.first_name,
-                o.last_name))
-        else:
-            fo.append('%s %s' % (o.first_name, o.last_name))
+    for o in unit.occupants.all():
+        if o.user.is_active:
+            if o.member:
+                url = reverse('coop:member_by_full_name',
+                    kwargs={'full_name': '%s_%s' % (o.last_name, o.first_name)})
+                fo.append('<a href="%s">%s %s</a>' % (url, o.first_name,
+                    o.last_name))
+            else:
+                fo.append('%s %s' % (o.first_name, o.last_name))
     return ', '.join(fo)
 
 
