@@ -581,7 +581,7 @@ def get_unit_participation(unit, participation_requirements):
     """
 
     result = []
-    occupants = unit.occupants.filter(member=True).all()
+    occupants = unit.occupants.filter(member=True).filter(user__is_active=True).all()
     for pr in participation_requirements:
         participation_list = []
         for occupant in occupants:
@@ -1184,7 +1184,7 @@ def get_formatted_occupants(unit):
 
     fo = []
     for o in unit.occupants.all():
-        if o.user.is_active:
+        if o.user and o.user.is_active:
             if o.member:
                 url = reverse('coop:member_by_full_name',
                     kwargs={'full_name': '%s_%s' % (o.last_name, o.first_name)})
