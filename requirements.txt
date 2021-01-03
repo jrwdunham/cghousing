@@ -1,4 +1,4 @@
-Django==1.7.7
+Django==1.11.29
 django-markdown-deux==1.0.5
 psycopg2-binary
 python-magic
