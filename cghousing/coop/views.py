@@ -2,9 +2,9 @@ import time
 import os
 import string
 import magic
+import logging
 import json
 import errno
-import pprint
 import subprocess
 import re
 from itertools import chain
@@ -27,6 +27,8 @@ from coop.models import (
     Forum, Thread, Post, ApplicationSettings, Page, File, Person, UPLOADS_DIR,
     BlockRepresentative, Committee, PhoneNumber, Unit, Committee,
     ParticipationRequirement)
+
+logger = logging.getLogger(__name__)
 
 # TODO:
 #
@@ -749,7 +751,6 @@ def members_pdf_view(request):
 
     members = Person.objects.filter(member=True).filter(user__is_active=True).all()
     path = generate_membership_list_pdf(members)
-    print 'path to pdf file: %s' % path
     if path:
         file_data = open(path, 'rb')
         response = HttpResponse(content=file_data)

@@ -1,6 +1,7 @@
 import string
 import datetime
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.timezone import now, localtime
@@ -15,7 +16,9 @@ from django.contrib.auth.models import User
 
 """
 
-UPLOADS_DIR = 'uploads'
+# UPLOADS_DIR = 'uploads'
+UPLOADS_DIR = settings.UPLOADS_PATH
+
 
 class Base(models.Model):
     """Abstract base class for CG models. Implements the functionality
